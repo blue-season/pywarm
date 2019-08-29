@@ -5,20 +5,20 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import .util
+from . import util
 
 
-_default_parent_module = None
+_DEFAULT_PARENT_MODULE = None
 
 
 def set_default_parent(parent):
-    global _default_parent_module
-    _default_parent_module = parent
+    global _DEFAULT_PARENT_MODULE
+    _DEFAULT_PARENT_MODULE = parent
 
 
 def get_default_parent():
-    global _default_parent_module
-    return _default_parent_module
+    global _DEFAULT_PARENT_MODULE
+    return _DEFAULT_PARENT_MODULE
 
 
 def _auto_name(name, parent):
@@ -34,11 +34,23 @@ def _auto_name(name, parent):
     return f'{name}_{track[name]}'
 
 
-def prepare_model_(model, input=None, shape=None):
+def prepare_model_(model, data, device='cpu'):
+    set_default_parent(model)
+    def _prep_data(d):
+        if isinstance(d, (np.ndarray, torch.Tensor)):
+            return torch.as_tensor(d).to(device)
+        elif isinstance(d, (list, tuple)):
+            if all(isinstance(x, int) for x in d):
+                return torch.randn(*d, device=device)
+            return [_prep_data(x) for x in d]
+        elif isinstance(d, dict):
+            return {_prep_data(v) for k, v in d.items()}
     with torch.no_grad():
         is_training = model.training
+        data = _prep_data(data)
         model.eval()
-        model(x)
+        model.to(device)
+        model(data)
         model.train(is_training)
     return model
 
@@ -76,43 +88,56 @@ def activate(x, spec):
     return fn(x, **kw)
 
 
-def permute(x, in_shape='NCE', out_shape='NCE'):
+def permute(x, in_shape='BDC', out_shape='BDC'):
     """ """
     if out_shape is None:
         return x
+    if isinstance(out_shape, (list, tuple, torch.Size)):
+        return x.permute(out_shape)
     if isinstance(in_shape, str) and isinstance(out_shape, str) :
-        assert set(in_shape) == set(out_shape) == {'N', 'C', 'E'}, 'Shape can only have chars N, C, and E.'
+        assert set(in_shape) == set(out_shape) <= {'B', 'C', 'D'}, 'In and out shapes must have save set of chars among B, C, and D.'
         if in_shape == out_shape:
             return x
-        pos = {c:i for i, c in enumerate(in_shape)}
-        out_shape = [pos[c] for c in out_shape]
-    return x.permute(out_shape)
+        if x.ndim == 2:
+            in_shape = in_shape.replace('D', '')
+            out_shape = out_shape.replace('D', '')
+        if x.ndim <= 3:
+            return x.permute([in_shape.find(d) for d in out_shape])
+        dim = {'B':1, 'C':1, 'D':x.ndim-2}
+        dim = np.split(list(x.shape), np.cumsum([dim[d] for d in in_shape]))[:-1]
+        dim = {d:v for d, v in zip(in_shape, dim)}
+        dd = dim['D']
+        dim = {'B':int(dim['B']), 'C':int(dim['C']), 'D':-1}
+        x = torch.reshape(x, [dim[d] for d in in_shape])
+        x = x.permute([in_shape.find(d) for d in out_shape])
+        dim['D'] = dd
+        x = torch.reshape(x, list(np.hstack([dim[d] for d in out_shape])))
+    return x
 
 
-def _forward(
-        base_class, base_name=None, name=None, base_arg=None, base_kw=None, parent=None, prep_fn=None, post_fn=None,
-        in_shape=None, base_shape=None, out_shape=None, forward_arg=None, forward_kw=None, tuple_out=False,
+def forward(x, base_class, 
+        base_name=None, name=None, base_arg=None, base_kw=None, parent=None, tuple_out=False,
+        in_shape=None, base_shape=None, out_shape=None, forward_arg=None, forward_kw=None,
         initialization=None, activation=None, **kw):
     """ """
     parent = parent or get_default_parent()
     if name is None:
-        base_name = base_name or util.camel_to_snake(base._get_name())
+        base_name = base_name or util.camel_to_snake(base_class._get_name())
         name = _auto_name(base_name, parent)
     if name not in parent._modules:
-        if prep_fn is not None:
-            base_arg, base_kw = prep_fn(base_arg, base_kw)
         base = base_class(*(base_arg or []), **(base_kw or {}))
         parent.add_module(name, base)
         if initialization is not None:
             s = parent.state_dict()
             for k, v in initialization.items():
-                initialize_(s[k], v)
+                initialize_(s[name+'.'+k], v)
     permute(x, in_shape, base_shape)
-    x, *_ = parent._modules[name](x, *(forward_arg or []), **(forward_kw or {}))
-    permute(x, base_shape, out_shape)
-    if post_fn is not None:
-        x, *_ = post_fn(x, *_)
-    x = activate(x, activation)
+    y = parent._modules[name](x, *(forward_arg or []), **(forward_kw or {}))
+    r = []
+    if isinstance(y, tuple):
+        y, *r = y
+    permute(y, base_shape, out_shape)
+    y = activate(y, activation)
     if tuple_out:
-        return x, _
-    return x
+        return (y, *r)
+    return y
