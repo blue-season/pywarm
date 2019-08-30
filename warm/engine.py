@@ -115,6 +115,14 @@ def permute(x, in_shape='BDC', out_shape='BDC'):
     return x
 
 
+def unused_kwargs(kw):
+    fn_kw = dict(base_class=None,
+        base_name=None, name=None, base_arg=None, base_kw=None, parent=None, tuple_out=False,
+        in_shape=None, base_shape=None, out_shape=None, forward_arg=None, forward_kw=None,
+        initialization=None, activation=None, )
+    return {k:v for k, v in kw.items() if k not in fn_kw}
+
+
 def forward(x, base_class, 
         base_name=None, name=None, base_arg=None, base_kw=None, parent=None, tuple_out=False,
         in_shape=None, base_shape=None, out_shape=None, forward_arg=None, forward_kw=None,

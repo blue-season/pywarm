@@ -27,7 +27,7 @@ class WarmNet(nn.Module):
         return F.log_softmax(x, dim=1)
 
 
-class Net(nn.Module):
+class TorchNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 20, 5, 1)
@@ -109,8 +109,7 @@ def main():
     test_data = datasets.MNIST('../data', train=False, download=True, transform=data_transform)
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=p.batch_size, shuffle=True, **kw)
     test_loader = torch.utils.data.DataLoader(test_data, batch_size=p.test_batch_size, shuffle=True, **kw)
-    if p.warm:
-        model = WarmNet() if p.warm else Net()
+    model = WarmNet() if p.warm else TorchNet()
     print(f'Using {model._get_name()}.')
     model = model.to(device)
     optimizer = optim.SGD(model.parameters(), lr=p.lr, momentum=p.momentum)

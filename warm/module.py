@@ -7,17 +7,34 @@ import torch.nn as nn
 import numpy as np
 
 
-class Crop1d:
+class Lambda(nn.Module):
+    def __init__(self, fn):
+        super().__init__()
+        self.fn = fn
+    def forward(self, x):
+        return self.fn(x)
+
+
+class Permute(nn.Module):
     pass
 
 
-class Permute:
-    pass
+class Sequential(nn.Sequential):
+    def forward(self, x):
+        for module in self._modules.values():
+            if isinstance(x, tuple):
+                try:
+                    x = module(x)
+                except Exception:
+                    x = module(x[0])
+            else:
+                x = module(x)
+        return x
 
 
-class Concat:
-    pass
-
-
-class Rnn:
-    pass
+class Shortcut(Sequential):
+    def __init__(self, projection=None):
+        super().__init__()
+        self.projection = projection or nn.Identity()
+    def forward(self, x):
+        return super().forward(x)+self.projection(x)
