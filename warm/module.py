@@ -15,16 +15,7 @@ class Lambda(nn.Module):
         self.arg = arg
         self.kw = kw
     def forward(self, x):
-        return self.fn(x, *arg, **kw)
-
-
-class Permute(nn.Module):
-    def __init__(self, in_shape='BCD', out_shape='BCD')
-        super().__init__()
-        self.in_shape = in_shape
-        self.out_shape = out_shape
-    def forward(self, x):
-        return engine.permute(x, self.in_shape, self.out_shape)
+        return self.fn(x, *self.arg, **self.kw)
 
 
 class Sequential(nn.Sequential):
@@ -41,8 +32,8 @@ class Sequential(nn.Sequential):
 
 
 class Shortcut(Sequential):
-    def __init__(self, projection=None):
-        super().__init__()
+    def __init__(self, *arg, projection=None):
+        super().__init__(*arg)
         self.projection = projection or nn.Identity()
     def forward(self, x):
         return super().forward(x)+self.projection(x)

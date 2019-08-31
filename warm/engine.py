@@ -88,7 +88,7 @@ def activate(x, spec):
     return fn(x, **kw)
 
 
-def permute(x, in_shape='BCD', out_shape='BCD'):
+def permute(x, in_shape='BCD', out_shape='BCD', **kw):
     """ """
     if (in_shape == out_shape) or (out_shape is None):
         return x

@@ -8,6 +8,9 @@ import numpy as np
 from . import engine
 
 
+permute = engine.permute
+
+
 def conv(x, size, kernel, init_weight=None, init_bias=None, bias=True, **kw):
     """ """
     d = x.ndim-3
