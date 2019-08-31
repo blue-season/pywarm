@@ -50,9 +50,14 @@ def batch_norm(x, **kw):
 
 
 def lstm(x, size,
-        init_weight_hh='orthogonal', init_weight_ih=None, init_bias_hh=None, init_bias_ih=None,
+        init_weight_hh='orthogonal_', init_weight_ih=None, init_bias_hh=None, init_bias_ih=None,
         bias=True, num_layers=1, **kw):
     """ """
+    init = dict(
+        weight_hh=init_weight_hh,
+        weight_ih=init_weight_ih,
+        bias_hh=init_bias_hh,
+        bias_ih=init_bias_ih, )
     inferred_kw = dict(
         base_name='lstm',
         base_class=nn.LSTM,
@@ -65,9 +70,14 @@ def lstm(x, size,
         in_shape='BCD',
         out_shape='BCD',
         initialization={
-            f'{k}_{l}':eval('init_'+k) for k in ['weight_hh', 'weight_ih']+(['bias_hh', 'bias_ih'] if bias else [])
+            f'{k}_l{l}':init[k] for k in ['weight_hh', 'weight_ih']+(['bias_hh', 'bias_ih'] if bias else [])
             for l in range(num_layers)}, )
     return engine.forward(x, **{**inferred_kw, **kw})
+
+
+def gru(*arg, **kw):
+    """ """
+    return lstm(*arg, base_name='gru', base_class=nn.GRU, **kw)
 
 
 def identity(x, *arg, **kw):
