@@ -106,10 +106,10 @@ def permute(x, in_shape='BCD', out_shape='BCD', **kw):
         dim = {d:v for d, v in zip(in_shape, dim)}
         dd = dim['D']
         dim = {'B':int(dim['B']), 'C':int(dim['C']), 'D':-1}
-        x = torch.reshape(x, [dim[d] for d in in_shape])
-        x = x.permute(*[in_shape.find(d) for d in out_shape])
+        x = torch.reshape(x, [dim[d] for d in in_shape]) # reshape to 3d
+        x = x.permute(*[in_shape.find(d) for d in out_shape]) # permute on 3d
         dim['D'] = dd
-        x = torch.reshape(x, list(np.hstack([dim[d] for d in out_shape])))
+        x = torch.reshape(x, list(np.hstack([dim[d] for d in out_shape]))) # reshape back to nd
     return x
 
 
@@ -132,8 +132,13 @@ def forward(x, base_class,
         name = _auto_name(base_name, parent)
     if name not in parent._modules:
         if infer_kw is not None:
+            shape = in_shape
+            if 'D' in shape:
+                shape = list(shape)
+                shape[shape.index('D')] = 'D'*(x.ndim-len(shape)+1)
+                shape = ''.join(shape)
             infer_kw = {
-                k:x.shape[in_shape.find(v) if isinstance(v, str) else v]
+                k:x.shape[shape.find(v) if isinstance(v, str) else v]
                 for k, v in infer_kw.items()}
         base = base_class(*(base_arg or []), **(infer_kw or {}), **(base_kw or {}), )
         parent.add_module(name, base)
