@@ -68,7 +68,7 @@ def test():
         new.eval()
         y_new = new(x)
         if torch.equal(y_old, y_new):
-            print('Success! Same result from old and new.')
+            print('Success! Same results from old and new.')
         else:
             print('Warning! New and old produce different results.')
 

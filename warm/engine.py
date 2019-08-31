@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# blue-season; 08-26-2019;
+# 08-26-2019;
 """
 """
 import torch
@@ -88,28 +88,26 @@ def activate(x, spec):
     return fn(x, **kw)
 
 
-def permute(x, in_shape='BDC', out_shape='BDC'):
+def permute(x, in_shape='BCD', out_shape='BCD'):
     """ """
-    if out_shape is None:
+    if (in_shape == out_shape) or (out_shape is None):
         return x
     if isinstance(out_shape, (list, tuple, torch.Size)):
-        return x.permute(out_shape)
+        return x.permute(*out_shape)
     if isinstance(in_shape, str) and isinstance(out_shape, str) :
         assert set(in_shape) == set(out_shape) <= {'B', 'C', 'D'}, 'In and out shapes must have save set of chars among B, C, and D.'
-        if in_shape == out_shape:
-            return x
         if x.ndim == 2:
             in_shape = in_shape.replace('D', '')
             out_shape = out_shape.replace('D', '')
         if x.ndim <= 3:
-            return x.permute([in_shape.find(d) for d in out_shape])
+            return x.permute(*[in_shape.find(d) for d in out_shape])
         dim = {'B':1, 'C':1, 'D':x.ndim-2}
         dim = np.split(list(x.shape), np.cumsum([dim[d] for d in in_shape]))[:-1]
         dim = {d:v for d, v in zip(in_shape, dim)}
         dd = dim['D']
         dim = {'B':int(dim['B']), 'C':int(dim['C']), 'D':-1}
         x = torch.reshape(x, [dim[d] for d in in_shape])
-        x = x.permute([in_shape.find(d) for d in out_shape])
+        x = x.permute(*[in_shape.find(d) for d in out_shape])
         dim['D'] = dd
         x = torch.reshape(x, list(np.hstack([dim[d] for d in out_shape])))
     return x
@@ -117,34 +115,38 @@ def permute(x, in_shape='BDC', out_shape='BDC'):
 
 def unused_kwargs(kw):
     fn_kw = dict(base_class=None,
-        base_name=None, name=None, base_arg=None, base_kw=None, parent=None, tuple_out=False,
-        in_shape=None, base_shape=None, out_shape=None, forward_arg=None, forward_kw=None,
-        initialization=None, activation=None, )
+        base_name=None, name=None, base_arg=None, base_kw=None, parent=None,
+        infer_kw=None, in_shape='BCD', base_shape=None, out_shape='BCD', tuple_out=False,
+        forward_arg=None, forward_kw=None, initialization=None, activation=None, )
     return {k:v for k, v in kw.items() if k not in fn_kw}
 
 
 def forward(x, base_class, 
-        base_name=None, name=None, base_arg=None, base_kw=None, parent=None, tuple_out=False,
-        in_shape=None, base_shape=None, out_shape=None, forward_arg=None, forward_kw=None,
-        initialization=None, activation=None, **kw):
+        base_name=None, name=None, base_arg=None, base_kw=None, parent=None,
+        infer_kw=None, in_shape='BCD', base_shape='BCD', out_shape='BCD', tuple_out=False,
+        forward_arg=None, forward_kw=None, initialization=None, activation=None, **kw):
     """ """
     parent = parent or get_default_parent()
     if name is None:
-        base_name = base_name or util.camel_to_snake(base_class._get_name())
+        base_name = base_name or util.camel_to_snake(base_class.__name__)
         name = _auto_name(base_name, parent)
     if name not in parent._modules:
-        base = base_class(*(base_arg or []), **(base_kw or {}))
+        if infer_kw is not None:
+            infer_kw = {
+                k:x.shape[in_shape.find(v) if isinstance(v, str) else v]
+                for k, v in infer_kw.items()}
+        base = base_class(*(base_arg or []), **(infer_kw or {}), **(base_kw or {}), )
         parent.add_module(name, base)
         if initialization is not None:
             s = parent.state_dict()
             for k, v in initialization.items():
                 initialize_(s[name+'.'+k], v)
-    permute(x, in_shape, base_shape)
+    x = permute(x, in_shape, base_shape)
     y = parent._modules[name](x, *(forward_arg or []), **(forward_kw or {}))
     r = []
     if isinstance(y, tuple):
         y, *r = y
-    permute(y, base_shape, out_shape)
+    y = permute(y, base_shape, out_shape)
     y = activate(y, activation)
     if tuple_out:
         return (y, *r)

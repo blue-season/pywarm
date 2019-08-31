@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# blue-season; 08-27-2019;
+# 08-27-2019;
 """
 """
 import torch
@@ -16,11 +16,11 @@ def conv(x, size, kernel, init_weight=None, init_bias=None, bias=True, **kw):
         base_name='conv',
         base_class=[nn.Conv1d, nn.Conv2d, nn.Conv3d][d],
         base_kw={
-            'in_channels':x.shape[1],
             'out_channels':size,
             'kernel_size':kernel,
             'bias':bias,
             **engine.unused_kwargs(kw), },
+        infer_kw={'in_channels':'C'},
         initialization={'weight':init_weight, **({'bias':init_bias} if bias else {})}, )
     return engine.forward(x, **{**inferred_kw, **kw})
 
@@ -30,10 +30,9 @@ def linear(x, size, init_weight=None, init_bias=None, bias=True, **kw):
     inferred_kw = dict(
         base_name='linear',
         base_class=nn.Linear,
-        base_kw={'in_features':x.shape[-1], 'out_features':size, 'bias':bias},
+        base_kw={'out_features':size, 'bias':bias},
         base_shape='BDC',
-        in_shape='BCD',
-        out_shape='BCD',
+        infer_kw={'in_features':'C'},
         initialization={'weight':init_weight, **({'bias':init_bias} if bias else {})}, )
     return engine.forward(x, **{**inferred_kw, **kw})
 
@@ -62,13 +61,11 @@ def lstm(x, size,
         base_name='lstm',
         base_class=nn.LSTM,
         base_kw={
-            'input_size':x.shape[1],
             'hidden_size':size,
             'num_layers':num_layers,
             **engine.unused_kwargs(kw), },
         base_shape='DBC',
-        in_shape='BCD',
-        out_shape='BCD',
+        infer_kw={'input_size':'C'},
         initialization={
             f'{k}_l{l}':init[k] for k in ['weight_hh', 'weight_ih']+(['bias_hh', 'bias_ih'] if bias else [])
             for l in range(num_layers)}, )
@@ -82,3 +79,16 @@ def gru(*arg, **kw):
 
 def identity(x, *arg, **kw):
     return x
+
+
+# def embedding(x, num_embeddings, embedding_dim, init_weight=None, **kw):
+#     inferred_kw = dict(
+#         base_name='embedding',
+#         base_class=nn.Embedding,
+#         base_kw={
+#             'num_embeddings':num_embeddings,
+#             'embedding_dim':embedding_dim,
+#             **engine.unused_kwargs(kw), },
+#         base_shape='BDC',
+#         initialization={'weight':init_weight}, )
+#     return engine.forward(x, **{**inferred_kw, **kw})
