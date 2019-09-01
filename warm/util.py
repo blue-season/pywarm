@@ -6,12 +6,13 @@ import re
 
 
 def camel_to_snake(name):
+    """ Convert a camelCaseString to its snake_case_equivalent. """
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
 def summary(model):
-    """ """
+    """ Print a summary about model buiding blocks and parameter counts. """
     indent_list, name_list, count_list = [], [], []
     def module_info(m, name, indent_level):
         count_list.append(sum([np.prod(list(p.size())) for p in m.parameters()]))
@@ -25,6 +26,8 @@ def summary(model):
     max_indent = max(indent_list)*4
     max_name = max(len(x) for x in name_list)+max_indent+2
     max_param = len(str(count_list[0]))+max_name+2
+    print('Blocks{:>{w}}'.format('Params', w=max_param-6))
+    print('-'*max_param)
     for indent, name, param in zip(indent_list, name_list, count_list):
         s0 = '    '*indent
         s1 = '{:{w}}'.format(name, w=max_name-len(s0))

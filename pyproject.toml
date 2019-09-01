@@ -1,0 +1,18 @@
+[tool.portray]
+modules = ["warm"]
+output_dir = "tmp"
+
+
+[tool.portray.mkdocs]
+markdown_extensions = ["pymdownx.superfences"]
+
+[tool.portray.mkdocs.theme]
+logo = "docs/pywarm-logo-small-light.gif"
+favicon = "docs/pywarm-logo-small-dark.gif"
+name = "material"
+palette = {primary = "deep orange", accent = "pink"}
+
+[tool.portray.pdoc3]
+config = ["show_source_code=False", "show_type_annotations=False", "sort_identifiers=True", "show_inherited_members=False"]
+template_dir = "docs"
+
