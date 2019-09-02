@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 # 08-27-2019;
 """
+Custom modules to enhance the nn Sequential experience.
 """
-import torch
 import torch.nn as nn
-import numpy as np
-from . import engine
 
 
 class Lambda(nn.Module):

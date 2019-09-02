@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # 08-26-2019;
 """
+PyWarm engine to the functional interface.
 """
 import torch
 import torch.nn as nn
 import numpy as np
-from . import util
+from warm import util
 
 
 _DEFAULT_PARENT_MODULE = None
@@ -69,16 +70,17 @@ def is_ready(model):
     return hasattr(model, '_pywarm_forward_pre_hook')
 
 
-def activate(x, spec, lookup=[nn.functional, torch]):
+def activate(x, spec, lookup=None):
     """ Activate tensors with given nonlinearity `spec`ification.\n
     - `x: Tensor or list of Tensor`; The tensors to be initialized.
     - `spec: str or callable or 2-tuple`; If a `str`, should be one of the nonlinearity functions contained in
         `torch.nn.functional` or `torch`. If a `callable`, it will be applied to `x` directly, i.e. `spec(x)`.
         If a 2-`tuple`, it must be of format `(callable, kwargs)`, i.e. `callable(x, **kwargs)`.
-    - `lookup: list`; Parent modules to look for `spec`.
+    - `lookup: None or list of module`; Parent modules to look for `spec`. If `None`, `[nn.functiona, torch]` is used.
     - `return: Tensor or list of Tensor`; Activation results. """
     if spec is None:
         return x
+    lookup = lookup or [nn.functional, torch]
     if isinstance(spec, str):
         for look in lookup:
             try:
@@ -108,12 +110,12 @@ def initialize_(x, spec):
 def permute(x, in_shape='BCD', out_shape='BCD', **kw):
     """ Permute the dimensions of a tensor.\n
     - `x: Tensor`; The nd-tensor to be permuted.
-    - `in_shape: str`; The dimension shape of `x`. Can only have characters `B` or `C` or `D`,
+    - `in_shape: str`; The dimension shape of `x`. Can only have characters `'B'` or `'C'` or `'D'`,
         which stand for Batch, Channel, or extra Dimensions. The default value `'BCD'` means
         the input tensor `x` should be at lest 2-d with shape `(Batch, Channel, Dim0, Dim1, Dim2, ...)`,
         where `Dim0, Dim1, Dim2 ...` stand for any number of extra dimensions.
     - `out_shape: str or tuple or None`; The dimension shape of returned tensor.  Default: `'BCD'`.
-        If a `str`, it is restricted to the same three characters `B`, `C` or `D` as the `in_shape`.
+        If a `str`, it is restricted to the same three characters `'B'`, `'C'` or `'D'` as the `in_shape`.
         If a `tuple`, `in_shape` is ignored, and simply `x.permute(out_shape)` is returned.
         If `None`, no permution will be performed.
     - `return: Tensor`; Permuted nd-tensor. """
@@ -162,10 +164,10 @@ def forward(x, base_class,
     - `base_kw: dict`; KWargs to be passed to create the child module instance. Default: None.
     - `parent: Module`; The parent of the child instance.  Default: None. If `None`, will use `get_default_parent`.
     - `infer_kw: dict`; Key should be valid for the child instance. Value shoud be a character,
-        one of `B`, `C`, or `D` (see `permute`), to substitute for a dimension of `x`. Default: None.
-    - `in_shape: str`; The dimension shape of `x`. See also `permute`. Default: 'BCD'.
-    - `base_shape: str`; The dimension shape required by the child module. See also `permute`. Default: 'BCD'.
-    - `out_shape: str or tuple or None`; The dimension shape of returned tensor. See also `permute`. Default: 'BCD'.
+        one of `'B'`, `'C'`, or `'D'` (see `permute`), to substitute for a dimension of `x`. Default: None.
+    - `in_shape: str`; The dimension shape of `x`. See also `permute`. Default: `'BCD'`.
+    - `base_shape: str`; The dimension shape required by the child module. See also `permute`. Default: `'BCD'`.
+    - `out_shape: str or tuple or None`; The dimension shape of returned tensor. See also `permute`. Default: `'BCD'`.
     - `tuple_out: bool`; Whether the child module will return more than 1 outputs (e.g. `nn.RNN`).
         If `True`, the returned value of the function will be a tuple containing all outputs. Default: False.
     - `forward_arg: tuple`; positional args to be passed when calling the child module instance. Default: None.

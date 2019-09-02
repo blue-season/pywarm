@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # 08-27-2019;
 """
+Wraps around various torch.nn Modules to fit into a functional interface.
 """
-import torch
 import torch.nn as nn
-import numpy as np
-from . import engine
+from warm import engine
 
 
 permute = engine.permute

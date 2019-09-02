@@ -1,4 +1,8 @@
-
+# -*- coding: utf-8 -*-
+# 08-28-2019;
+"""
+Short utilities.
+"""
 import torch
 import torch.nn as nn
 import numpy as np

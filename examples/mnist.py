@@ -6,8 +6,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
+from pathlib import Path
 import sys
-sys.path.append('..')
+sys.path.append(str(Path(__file__).parent.parent))
 import warm
 import warm.functional as W
 

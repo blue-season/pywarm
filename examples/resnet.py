@@ -2,8 +2,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from pathlib import Path
 import sys
-sys.path.append('..')
+sys.path.append(str(Path(__file__).parent.parent))
 import warm
 import warm.util
 import warm.functional as W

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # 08-31-2019;
 """
+Test cases for warm.functional.
 """
 import torch
 import torch.nn as nn
+from pathlib import Path
 import sys
-sys.path.append('.')
+sys.path.append(str(Path(__file__).parent.parent))
 import warm.module as mm
 import warm.functional as W
 
