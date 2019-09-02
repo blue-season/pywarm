@@ -1,9 +1,15 @@
 
-![PyWarm Logo](https://github.com/blue-season/pywarm/raw/gh-pages/docs/pywarm-logo.png)
+![PyWarm - A cleaner way to build neural networks for PyTorch](https://github.com/blue-season/pywarm/raw/gh-pages/docs/pywarm-logo.png)
 
 # PyWarm
 
 A cleaner way to build neural networks for PyTorch.
+
+[![PyPI Python Version](https://img.shields.io/pypi/pyversions/pywarm)](https://github.com/blue-season/pywarm)
+[![PyPI Version](https://img.shields.io/pypi/v/pywarm)](https://pypi.org/project/pywarm/)
+[![License](https://img.shields.io/github/license/blue-season/pywarm)](https://github.com/blue-season/pywarm/blob/master/LICENSE)
+
+----
 
 ## Introduction
 
