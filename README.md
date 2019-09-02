@@ -1,5 +1,5 @@
 
-![PyWarm - A cleaner way to build neural networks for PyTorch](https://github.com/blue-season/pywarm/raw/gh-pages/docs/pywarm-logo.png)
+[![PyWarm - A cleaner way to build neural networks for PyTorch](https://github.com/blue-season/pywarm/raw/gh-pages/docs/pywarm-logo.png)](https://blue-season.github.io/pywarm/)
 
 # PyWarm
 
