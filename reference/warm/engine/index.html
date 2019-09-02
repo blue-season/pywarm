@@ -1,0 +1,791 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../../docs/pywarm-logo-small-dark.gif">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.2">
+    
+    
+      
+        <title>Engine - pywarm</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.30686662.css">
+      
+        <link rel="stylesheet" href="../../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#ff7043">
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="deep-orange" data-md-color-accent="pink">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#module-warmengine" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../../.." title="pywarm" class="md-header-nav__button md-logo">
+          
+            <img src="../../../docs/pywarm-logo-small-light.gif" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              pywarm
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Engine
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/blue-season/pywarm.git/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    blue-season/pywarm
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../../.." title="pywarm" class="md-nav__button md-logo">
+      
+        <img src="../../../docs/pywarm-logo-small-light.gif" width="48" height="48">
+      
+    </a>
+    pywarm
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/blue-season/pywarm.git/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    blue-season/pywarm
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../CONTRIBUTING/" title="Contributing" class="md-nav__link">
+      Contributing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../docs/tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      Reference
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+    
+    <label class="md-nav__link" for="nav-4-1">
+      Warm
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-4-1">
+        Warm
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Engine
+      </label>
+    
+    <a href="./" title="Engine" class="md-nav__link md-nav__link--active">
+      Engine
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#activate" class="md-nav__link">
+    activate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forward" class="md-nav__link">
+    forward
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_default_parent" class="md-nav__link">
+    get_default_parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize_" class="md-nav__link">
+    initialize_
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_ready" class="md-nav__link">
+    is_ready
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permute" class="md-nav__link">
+    permute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prepare_model_" class="md-nav__link">
+    prepare_model_
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_default_parent" class="md-nav__link">
+    set_default_parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unused_kwargs" class="md-nav__link">
+    unused_kwargs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../functional/" title="Functional" class="md-nav__link">
+      Functional
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../" title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../module/" title="Module" class="md-nav__link">
+      Module
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../util/" title="Util" class="md-nav__link">
+      Util
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#activate" class="md-nav__link">
+    activate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forward" class="md-nav__link">
+    forward
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_default_parent" class="md-nav__link">
+    get_default_parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize_" class="md-nav__link">
+    initialize_
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_ready" class="md-nav__link">
+    is_ready
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permute" class="md-nav__link">
+    permute
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prepare_model_" class="md-nav__link">
+    prepare_model_
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set_default_parent" class="md-nav__link">
+    set_default_parent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unused_kwargs" class="md-nav__link">
+    unused_kwargs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/blue-season/pywarm.git/edit/master/docs/reference/warm/engine.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <h1 id="module-warmengine">Module warm.engine</h1>
+<p>PyWarm engine to the functional interface.</p>
+<h2 id="functions">Functions</h2>
+<hr />
+<h3 id="activate">activate</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">x</span><span class="p">,</span>
+  <span class="n">spec</span><span class="p">,</span>
+  <span class="n">lookup</span><span class="o">=</span><span class="kc">None</span> 
+</pre></div>
+Activate tensors with given nonlinearity <code>spec</code>ification.</p>
+<ul>
+<li><code>x: Tensor or list of Tensor</code>; The tensors to be initialized.</li>
+<li><code>spec: str or callable or 2-tuple</code>; If a <code>str</code>, should be one of the nonlinearity functions contained in
+    <code>torch.nn.functional</code> or <code>torch</code>. If a <code>callable</code>, it will be applied to <code>x</code> directly, i.e. <code>spec(x)</code>.
+    If a 2-<code>tuple</code>, it must be of format <code>(callable, kwargs)</code>, i.e. <code>callable(x, **kwargs)</code>.</li>
+<li><code>lookup: None or list of module</code>; Parent modules to look for <code>spec</code>. If <code>None</code>, <code>[nn.functional, torch]</code> is used.</li>
+<li><code>return: Tensor or list of Tensor</code>; Activation results.</li>
+</ul>
+<hr />
+<h3 id="forward">forward</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">x</span><span class="p">,</span>
+  <span class="n">base_class</span><span class="p">,</span>
+  <span class="n">base_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">base_arg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">base_kw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">infer_kw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">in_shape</span><span class="o">=</span><span class="s1">&#39;BCD&#39;</span><span class="p">,</span>
+  <span class="n">base_shape</span><span class="o">=</span><span class="s1">&#39;BCD&#39;</span><span class="p">,</span>
+  <span class="n">out_shape</span><span class="o">=</span><span class="s1">&#39;BCD&#39;</span><span class="p">,</span>
+  <span class="n">tuple_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+  <span class="n">forward_arg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">forward_kw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">initialization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">activation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="o">**</span><span class="n">kw</span> 
+</pre></div>
+A forward template that creates child instances at the first time it is called.</p>
+<ul>
+<li><code>x: Tensor</code>; The nd-tensor to be forwarded.</li>
+<li><code>base_class: Module</code>; A child <code>torch.nn.Module</code> that will be created at the first time this function is called.</li>
+<li><code>base_name: str</code>; Name for the <code>base_class</code>. Default: base_class name.</li>
+<li><code>name: str</code>; Name for the child module instance. Default: class name plus ordinal.</li>
+<li><code>base_arg: tuple</code>; Positional args to be passed to create the child module instance. Default: None.</li>
+<li><code>base_kw: dict</code>; KWargs to be passed to create the child module instance. Default: None.</li>
+<li><code>parent: Module</code>; The parent of the child instance.  Default: None. If <code>None</code>, will use <code>get_default_parent</code>.</li>
+<li><code>infer_kw: dict</code>; Key should be valid for the child instance. Value shoud be a character,
+    one of <code>'B'</code>, <code>'C'</code>, or <code>'D'</code> (see <code>permute</code>), to substitute for a dimension of <code>x</code>. Default: None.</li>
+<li><code>in_shape: str</code>; The dimension shape of <code>x</code>. See also <code>permute</code>. Default: <code>'BCD'</code>.</li>
+<li><code>base_shape: str</code>; The dimension shape required by the child module. See also <code>permute</code>. Default: <code>'BCD'</code>.</li>
+<li><code>out_shape: str or tuple or None</code>; The dimension shape of returned tensor. See also <code>permute</code>. Default: <code>'BCD'</code>.</li>
+<li><code>tuple_out: bool</code>; Whether the child module will return more than 1 outputs (e.g. <code>nn.RNN</code>).
+    If <code>True</code>, the returned value of the function will be a tuple containing all outputs. Default: False.</li>
+<li><code>forward_arg: tuple</code>; positional args to be passed when calling the child module instance. Default: None.</li>
+<li><code>forward_kw: dict</code>; KWargs to be passed when calling the child module instance. Default: None.</li>
+<li><code>initialization: str or callable or 2-tuple</code>; See the <code>spec</code> argument of <code>initialize_</code>. Default: None.</li>
+<li><code>activation: str or callable or 2-tuple</code>; See the <code>spec</code> argument of <code>activate</code>. Default: None.</li>
+<li><code>return: Tensor or tuple</code>; If <code>tuple_out</code> is <code>True</code>, the returned value will be a <code>tuple</code>.</li>
+</ul>
+<hr />
+<h3 id="get_default_parent">get_default_parent</h3>
+<p><div class="highlight"><pre><span></span>
+</pre></div>
+Get the default <code>parent</code> module.</p>
+<hr />
+<h3 id="initialize_">initialize_</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">x</span><span class="p">,</span>
+  <span class="n">spec</span> 
+</pre></div>
+Initialize parameters with given nonlinearity <code>spec</code>ification.</p>
+<ul>
+<li><code>x: Tensor or list of Tensor</code>; The tensors to be initialized.</li>
+<li><code>spec: str or callable or 2-tuple</code>; If a <code>str</code>, should be one of the nonlinearity functions contained in
+    <code>torch.nn.init</code>. If a <code>callable</code>, it will be applied to <code>x</code> directly, i.e. <code>spec(x)</code>. If a 2-<code>tuple</code>,
+    it must be of format <code>(callable, kwargs)</code>, i.e. <code>callable(x, **kwargs)</code>.</li>
+</ul>
+<hr />
+<h3 id="is_ready">is_ready</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">model</span> 
+</pre></div>
+Check if a <code>model</code> is prepared.</p>
+<hr />
+<h3 id="permute">permute</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">x</span><span class="p">,</span>
+  <span class="n">in_shape</span><span class="o">=</span><span class="s1">&#39;BCD&#39;</span><span class="p">,</span>
+  <span class="n">out_shape</span><span class="o">=</span><span class="s1">&#39;BCD&#39;</span><span class="p">,</span>
+  <span class="o">**</span><span class="n">kw</span> 
+</pre></div>
+Permute the dimensions of a tensor.</p>
+<ul>
+<li><code>x: Tensor</code>; The nd-tensor to be permuted.</li>
+<li><code>in_shape: str</code>; The dimension shape of <code>x</code>. Can only have characters <code>'B'</code> or <code>'C'</code> or <code>'D'</code>,
+    which stand for Batch, Channel, or extra Dimensions. The default value <code>'BCD'</code> means
+    the input tensor <code>x</code> should be at lest 2-d with shape <code>(Batch, Channel, Dim0, Dim1, Dim2, ...)</code>,
+    where <code>Dim0, Dim1, Dim2 ...</code> stand for any number of extra dimensions.</li>
+<li><code>out_shape: str or tuple or None</code>; The dimension shape of returned tensor.  Default: <code>'BCD'</code>.
+    If a <code>str</code>, it is restricted to the same three characters <code>'B'</code>, <code>'C'</code> or <code>'D'</code> as the <code>in_shape</code>.
+    If a <code>tuple</code>, <code>in_shape</code> is ignored, and simply <code>x.permute(out_shape)</code> is returned.
+    If <code>None</code>, no permution will be performed.</li>
+<li><code>return: Tensor</code>; Permuted nd-tensor.</li>
+</ul>
+<hr />
+<h3 id="prepare_model_">prepare_model_</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">model</span><span class="p">,</span>
+  <span class="n">data</span><span class="p">,</span>
+  <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span> 
+</pre></div>
+Initialize all childen modules defined by <code>warm</code> in a parent <code>model</code>.</p>
+<ul>
+<li><code>model: Module</code>; The parent model to be prepared.</li>
+<li><code>data: Tensor, or list of int</code>; A batch of data with the correct shape and type to be forwarded by model.
+    <code>data</code> can also be a list of <code>int</code>, in which case it is interpreted as the shape of the input data.</li>
+<li><code>device: str, or torch.device</code>; Should be the same for <code>model</code> and <code>data</code>. Default: <code>'cpu'</code>.</li>
+<li><code>return: Module</code>; The prepared model, with all children modules defined by <code>warm</code> initialized.</li>
+</ul>
+<hr />
+<h3 id="set_default_parent">set_default_parent</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">parent</span> 
+</pre></div>
+Set the default <code>parent</code> module.</p>
+<hr />
+<h3 id="unused_kwargs">unused_kwargs</h3>
+<p><div class="highlight"><pre><span></span>  <span class="n">kw</span> 
+</pre></div>
+Filter out entries used by <code>forward</code> and return the rest.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../../../docs/tutorial/" title="Tutorial" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Tutorial
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../functional/" title="Functional" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Functional
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Powered by
+        <a href="http://timothycrosley.github.io/portray">portray.</a>
+        You too can
+        <a href="http://timothycrosley.github.io/portray">
+          portray</a>
+        your Python project well using automatic documentation.
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/application.c648116f.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+    
+  </body>
+</html>
