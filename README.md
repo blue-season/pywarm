@@ -9,6 +9,8 @@ A cleaner way to build neural networks for PyTorch.
 [![PyPI Version](https://img.shields.io/pypi/v/pywarm)](https://pypi.org/project/pywarm/)
 [![License](https://img.shields.io/github/license/blue-season/pywarm)](https://github.com/blue-season/pywarm/blob/master/LICENSE)
 
+|  [Examples](https://blue-season.github.io/pywarm/docs/example/)  |  [Tutorial](https://blue-season.github.io/pywarm/docs/tutorial/)  |   [API reference](https://blue-season.github.io/pywarm/reference/warm/functional/)  |  
+
 ----
 
 ## Introduction
