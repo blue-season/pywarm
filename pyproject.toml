@@ -13,10 +13,10 @@ packages = [ { include='warm' }, ]
 
 [tool.poetry.dependencies]
 python = '>=3.6'
-toml = '>=0.9'
 
 
 [tool.poetry.dev-dependencies]
+toml = '>=0.9'
 pytest = '>=3.0'
 torch = '>=1.0'
 torchvision = '>=0.4'

@@ -377,6 +377,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dropout" class="md-nav__link">
+    dropout
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#gru" class="md-nav__link">
     gru
   </a>
@@ -509,6 +516,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#dropout" class="md-nav__link">
+    dropout
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#gru" class="md-nav__link">
     gru
   </a>
@@ -607,6 +621,24 @@ Convolution layer.</p>
     as well as <code>warm.engine.forward</code>. Refer to their docs for details. Some of the additional ConvNd arguments:
     <code>stride, padding, dilation, groups</code>.</li>
 <li><code>return: Tensor</code>; With shape <code>(Batch, Size, *)</code> where <code>*</code> can be 1d, 2d, 3d that depends on <code>x</code>.</li>
+</ul>
+<hr />
+<h3 id="dropout">dropout</h3>
+<p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
+    <span class="n">x</span><span class="p">,</span>
+  <span class="n">rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+  <span class="n">by_channel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+  <span class="o">**</span><span class="n">kw</span> 
+</pre></div>
+Dropout layer.</p>
+<p>During training, randomly zeros part of input tensor <code>x</code>, at probability <code>rate</code>.</p>
+<ul>
+<li><code>x: Tensor</code>; Can be of any shape if <code>by_channel</code> is false, or 2d and up if <code>by_channel</code> is true.</li>
+<li><code>rate: float</code>; The probability of dropout. Default 0.5.</li>
+<li><code>by_channel: bool</code>; If true, will dropout entire channels (all <code>'D'</code> dimensions will be 0 if x is <code>'BCD'</code>).
+    <code>by_channel</code> true requires <code>x</code> to be 2d or more.</li>
+<li><code>inplace: bool</code>; If true, the operation will be in-place and the input <code>x</code> will be altered.</li>
+<li><code>return: Tensor</code>; Same shape as <code>x</code>.</li>
 </ul>
 <hr />
 <h3 id="gru">gru</h3>

@@ -85,3 +85,18 @@ def test_gru():
 def test_identity():
     x = torch.randn(1, 2, 3)
     assert torch.equal(W.identity(x, 7, 8, a='b'), x)
+
+
+def test_dropout():
+    m = nn.Module()
+    x = torch.ones(2, 6, 6, 6)
+    torch.manual_seed(100)
+    y0 = nn.Dropout(0.3)(x)
+    torch.manual_seed(100)
+    y1 = W.dropout(x, 0.3, parent=m)
+    assert torch.equal(y0, y1)
+    torch.manual_seed(100)
+    y0 = nn.Dropout2d(0.3)(x)
+    torch.manual_seed(100)
+    y1 = W.dropout(x, 0.3, by_channel=True, parent=m)
+    assert torch.equal(y0, y1)
