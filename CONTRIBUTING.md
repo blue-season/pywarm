@@ -1,6 +1,6 @@
 # Contributing to PyWarm
 
-[PyWarm](https://github.com/blue-season/pywarm) is developed on [GitHub](https://github.com/blue-season/pywarm). 
+PyWarm is developed on [GitHub](https://github.com/blue-season/pywarm). 
 
 Please use GitHub to file Bug reports and submit pull requests. Please document and test before submissions.
 
