@@ -1,5 +1,5 @@
 
-![PyWarm Logo](docs/pywarm-logo.png)
+![PyWarm Logo](https://github.com/blue-season/pywarm/raw/gh-pages/docs/pywarm-logo.png)
 
 # PyWarm
 
