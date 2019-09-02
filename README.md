@@ -18,10 +18,11 @@ This result in a much readable model definition in fewer lines of code.
 ----
 
 For example, a convnet for MNIST:
-(Click the tabs to switch between Warm and Torch versions)
+(If needed, click the tabs to switch between Warm and Torch versions)
 
 
 ``` Python tab="Warm" linenums="1"
+# powered by PyWarm
 import torch.nn as nn
 import torch.nn.functional as F
 import warm
@@ -46,7 +47,8 @@ class ConvNet(nn.Module):
 ```
 
 ``` Python tab="Torch" linenums="1"
-# from pytorch tutorials/beginner_source/blitz/neural_networks_tutorial.py 
+# vanilla PyTorch version, taken from
+# pytorch tutorials/beginner_source/blitz/neural_networks_tutorial.py 
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -94,8 +96,14 @@ self.conv1 = nn.Conv2d(1, 20, 5, 1)
 self.conv2 = nn.Conv2d(20, 50, 5, 1)
 ```
 
--   One unified `W.conv` for all 1D, 2D, and 3D cases.
-    Fewer things to keep track of!
+-   One unified `W.conv` for all 1D, 2D, and 3D cases. Fewer things to keep track of!
+
+For deeper neural networks, see additional [examples](https://blue-season.github.io/pywarm/docs/example/).
+
+----
+## Installation
+
+    pip3 install pywarm
 
 ----
 ## Quick start: 30 seconds to PyWarm
@@ -110,7 +118,7 @@ import warm.functional as W
 
 -   Second, delete child module definitions in the model's `__init__()` method.
     In stead, use `W.conv`, `W.linear` ... etc. in the model's `forward()` method,
-    just like how you would use `F.max_pool2d`, `F.relu` ... etc.
+    just like how you would use torch nn functional `F.max_pool2d`, `F.relu` ... etc.
 
     For example, instead of writing:
 
@@ -147,9 +155,14 @@ class MyWarmModule(nn.Module):
     
     The model is now ready to use, just like any other PyTorch models.
 
+Check out the [tutorial](https://blue-season.github.io/pywarm/docs/tutorial/) 
+and [examples](https://blue-season.github.io/pywarm/docs/example/) if you want to learn more!
 
 ----
-## Installation
+## Documentation
 
-    pip3 install pywarm
+-   [Examples](https://blue-season.github.io/pywarm/docs/example/)
 
+-   [Tutorial](https://blue-season.github.io/pywarm/docs/tutorial/) 
+
+-   [API reference](https://blue-season.github.io/pywarm/reference/warm/functional/)
