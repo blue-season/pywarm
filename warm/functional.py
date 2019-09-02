@@ -45,7 +45,7 @@ def conv(x, size, kernel, init_weight=None, init_bias=None, bias=True, **kw):
 
 def linear(x, size, init_weight=None, init_bias=None, bias=True, **kw):
     """ Linear transformation layer.\n
-    - `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where * means any number of additional dimensions.
+    - `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where `*` means any number of additional dimensions.
     - `size: int`; Size of hidden features, and size of the output channel.
     - `init_weight: None or str or callable`; Initialization specification for the weight tensor.
         If a `str`, should be one of the nonlinearity functions contained in `torch.nn.init`.
@@ -68,7 +68,7 @@ def linear(x, size, init_weight=None, init_bias=None, bias=True, **kw):
 
 def batch_norm(x, **kw):
     """ Batch Normalization layer.\n
-    - `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where * means any number of additional dimensions.
+    - `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where `*` means any number of additional dimensions.
     - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.BatchNormNd`, where N can be 1, 2 or 3.
         as well as `warm.engine.forward`. Refer to their docs for details. Some of the additional BatchNorm arguments:
         `eps, momentum, affine, track_running_stats`.
@@ -149,7 +149,7 @@ def gru(*arg, **kw):
     - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.GRU`, as well as `warm.engine.forward`.
         Refer to their docs for details. Some of the additional GRU arguments: `dropout, bidirectional, batch_first`.
     - `return: Tensor or tuple`; If `tuple_out` set to true, will return `(out, (h_n, c_n)`, otherwise just `out`.
-        `out` has shape `(Batch, Size, Length*Directions)`, where Directions = 2 if `bidirectional` else 1.
+        `out` has shape `(Batch, Size, Length*Directions)`, where `Directions` = 2 if `bidirectional` else 1.
         `h_n` has shape `(num_layers*Directions, Batch, Size)`; The hidden states. 
         `c_n` has shape `(num_layers*Directions, Batch, Size)`; The cell states. """
     return lstm(*arg, base_name='gru', base_class=nn.GRU, **kw)

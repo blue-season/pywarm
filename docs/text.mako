@@ -22,7 +22,8 @@ ${"### " + func.name}
 
 
 ```python3
-  ${",\n  ".join(func.params(annotate=show_type_annotations))} ${returns}
+def :
+    ${",\n  ".join(func.params(annotate=show_type_annotations))} ${returns}
 ```
 ${func.docstring}
 
@@ -46,7 +47,8 @@ ${"---"}
 ${"### " + cls.name}
 
 ```python3
-  ${",\n  ".join(cls.params(annotate=show_type_annotations))}
+def :
+    ${",\n  ".join(cls.params(annotate=show_type_annotations))}
 ```
 
 ${cls.docstring}
