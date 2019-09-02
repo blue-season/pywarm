@@ -158,3 +158,20 @@ def gru(*arg, **kw):
 def identity(x, *arg, **kw):
     """ Identity layer that returns the first input, ignores the rest arguments. """
     return x
+
+
+def dropout(x, rate=0.5, by_channel=False, **kw):
+    """ Dropout layer.\n
+    During training, randomly zeros part of input tensor `x`, at probability `rate`.\n
+    - `x: Tensor`; Can be of any shape if `by_channel` is false, or 2d and up if `by_channel` is true.
+    - `rate: float`; The probability of dropout. Default 0.5.
+    - `by_channel: bool`; If true, will dropout entire channels (all `'D'` dimensions will be 0 if x is `'BCD'`).
+        `by_channel` true requires `x` to be 2d or more.
+    - `inplace: bool`; If true, the operation will be in-place and the input `x` will be altered.
+    - `return: Tensor`; Same shape as `x`. """
+    inferred_kw = dict(
+        base_name='dropout',
+        base_class=[nn.Dropout, nn.Dropout2d][by_channel],
+        base_kw={'p':rate},
+        base_shape=[None, 'BCD'][by_channel], )
+    return engine.forward(x, **{**inferred_kw, **kw})
