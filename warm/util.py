@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # 08-28-2019;
 """
 Short utilities.

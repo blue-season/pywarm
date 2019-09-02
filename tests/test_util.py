@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # 08-31-2019;
 """
 Test cases for warm.util.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # 08-26-2019;
 """
 PyWarm engine to the functional interface.
@@ -76,7 +75,7 @@ def activate(x, spec, lookup=None):
     - `spec: str or callable or 2-tuple`; If a `str`, should be one of the nonlinearity functions contained in
         `torch.nn.functional` or `torch`. If a `callable`, it will be applied to `x` directly, i.e. `spec(x)`.
         If a 2-`tuple`, it must be of format `(callable, kwargs)`, i.e. `callable(x, **kwargs)`.
-    - `lookup: None or list of module`; Parent modules to look for `spec`. If `None`, `[nn.functiona, torch]` is used.
+    - `lookup: None or list of module`; Parent modules to look for `spec`. If `None`, `[nn.functional, torch]` is used.
     - `return: Tensor or list of Tensor`; Activation results. """
     if spec is None:
         return x

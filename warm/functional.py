@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # 08-27-2019;
 """
 Wraps around various torch.nn Modules to fit into a functional interface.

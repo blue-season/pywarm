@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # 08-27-2019;
 """
 Custom modules to enhance the nn Sequential experience.
