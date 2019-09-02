@@ -1,17 +1,23 @@
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
+# 08-29-2019;
+"""
+Construct a WarmResNet() using PyWarm, then download state dicts
+for torchvision.models.resnet18(), load into WarmResNet(),
+compare if it produce identical results as the official one.
+"""
 from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append('..')
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 import warm
 import warm.util
 import warm.functional as W
 
 
 def basic(x, size, stride, stack_index, block_index):
-    """ """
+    """ The basic block. """
     prefix = f'layer{stack_index+1}-{block_index}-'
     y = W.conv(x, size, 3, stride=stride, padding=1, bias=False, name=prefix+'conv1')
     y = W.batch_norm(y, activation='relu', name=prefix+'bn1')
@@ -24,7 +30,7 @@ def basic(x, size, stride, stack_index, block_index):
 
 
 def stack(x, num_block, size, stride, stack_index, block=basic):
-    """ """
+    """ A stack of num_block blocks. """
     for block_index, s in enumerate([stride]+[1]*(num_block-1)):
         x = block(x, size, s, stack_index, block_index)
     return x
@@ -32,13 +38,11 @@ def stack(x, num_block, size, stride, stack_index, block=basic):
 
 class WarmResNet(nn.Module):
     def __init__(self, block=basic, stack_spec=((2, 64, 1), (2, 128, 2), (2, 256, 2), (2, 512, 2))):
-        """ """
         super().__init__()
         self.block = block
         self.stack_spec = stack_spec
         warm.engine.prepare_model_(self, [2, 3, 32, 32])
     def forward(self, x):
-        """ """
         y = W.conv(x, 64, 7, stride=2, padding=3, bias=False, name='conv1')
         y = W.batch_norm(y, activation='relu', name='bn1')
         y = F.max_pool2d(y, 3, stride=2, padding=1)
@@ -61,6 +65,7 @@ def test():
         s = '-'.join(s[:-1])+'.'+s[-1]
         state[s] = state.pop(k)
     new.load_state_dict(state)
+    warm.util.summary(old)
     warm.util.summary(new)
     x = torch.randn(1, 3, 32, 32)
     with torch.no_grad():

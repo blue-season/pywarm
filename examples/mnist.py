@@ -1,13 +1,20 @@
-
+# 08-27-2019;
+"""
+MNIST training example.
+Use `python mnist.py` to run with PyTorch NN.
+Use `python mnist.py --warm` to run with PyWarm NN.
+Use `python mnist.py --help` to see a list of cli argument options.
+"""
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append('..')
 import argparse
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-from pathlib import Path
-import sys
-sys.path.append(str(Path(__file__).parent.parent))
 import warm
 import warm.functional as W
 

@@ -16,7 +16,7 @@ All guidelines here are in addition to or an upgrade of the Python [PEP 8](https
 
 ### Max Line Length
 
-120 characters. 79 is too short. PyWarm is developed on a 49" 5120 x 1440 monitor.
+120 characters. 79 is too short.
 
 ### Closing Parentheses
 
