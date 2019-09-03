@@ -75,7 +75,7 @@ class BasicBlock(nn.Module):
             nn.ReLU(inplace=True),
             nn.Conv2d(out_channels, out_channels*BasicBlock.expansion,
                 kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(out_channels * BasicBlock.expansion),
+            nn.BatchNorm2d(out_channels * BasicBlock.expansion), )
         self.shortcut = nn.Sequential()
         if stride != 1 or in_channels != BasicBlock.expansion*out_channels:
             self.shortcut = nn.Sequential(
