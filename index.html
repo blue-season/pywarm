@@ -502,9 +502,14 @@
                   <a href="https://github.com/blue-season/pywarm.git/edit/master/docs/README.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <p><img alt="PyWarm Logo" src="docs/pywarm-logo.png" /></p>
+                <p><a href="https://blue-season.github.io/pywarm/"><img alt="PyWarm - A cleaner way to build neural networks for PyTorch" src="https://github.com/blue-season/pywarm/raw/gh-pages/docs/pywarm-logo.png" /></a></p>
 <h1 id="pywarm">PyWarm</h1>
 <p>A cleaner way to build neural networks for PyTorch.</p>
+<p><a href="https://github.com/blue-season/pywarm"><img alt="PyPI Python Version" src="https://img.shields.io/pypi/pyversions/pywarm" /></a>
+<a href="https://pypi.org/project/pywarm/"><img alt="PyPI Version" src="https://img.shields.io/pypi/v/pywarm" /></a>
+<a href="https://github.com/blue-season/pywarm/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/blue-season/pywarm" /></a></p>
+<p>|  <a href="https://blue-season.github.io/pywarm/docs/example/">Examples</a>  |  <a href="https://blue-season.github.io/pywarm/docs/tutorial/">Tutorial</a>  |   <a href="https://blue-season.github.io/pywarm/reference/warm/functional/">API reference</a>  |  </p>
+<hr />
 <h2 id="introduction">Introduction</h2>
 <p>PyWarm is a high-level neural network construction API for PyTorch.
 It only aims to simplify the network definition, and does not cover
@@ -634,7 +639,7 @@ This result in a much readable model definition in fewer lines of code.</p>
 <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)</span>
 
 
-<span class="c1"># Troch</span>
+<span class="c1"># Torch</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -667,6 +672,7 @@ This result in a much readable model definition in fewer lines of code.</p>
 <div class="highlight"><pre><span></span><span class="c1"># Torch</span>
 <span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="o">...</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
         <span class="o">...</span>
@@ -680,6 +686,7 @@ This result in a much readable model definition in fewer lines of code.</p>
 <div class="highlight"><pre><span></span><span class="c1"># Warm</span>
 <span class="k">class</span> <span class="nc">MyWarmModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="o">...</span>
         <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape_or_data</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
