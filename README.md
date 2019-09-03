@@ -99,7 +99,7 @@ x = W.conv(x, 20, 5, activation='relu')
 x = W.conv(x, 50, 5, activation='relu')
 
 
-# Troch
+# Torch
 self.conv1 = nn.Conv2d(1, 20, 5, 1)
 self.conv2 = nn.Conv2d(20, 50, 5, 1)
 ```
