@@ -134,6 +134,7 @@ import warm.functional as W
 # Torch
 class MyModule(nn.Module):
     def __init__(self):
+        super().__init__()
         ...
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size)
         ...
@@ -147,6 +148,7 @@ class MyModule(nn.Module):
 # Warm
 class MyWarmModule(nn.Module):
     def __init__(self):
+        super().__init__()
         ...
         warm.engine.prepare_model_(self, input_shape_or_data)
     def forward(self, x):
