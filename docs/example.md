@@ -145,6 +145,10 @@ if stride != 1 or in_channels != BasicBlock.expansion*out_channels:
     # 1x1 conv to project channel size of x to y.
 ```
 
+-   When warming the model via `warm.engine.prepare_model_(self, [2, 3, 32, 32])`
+    We set the first `Batch` dimension to 2 because the model uses `batch_norm`,
+    which will not work when `Batch` is 1.
+
 ----
 
 ## MobileNet
@@ -157,7 +161,7 @@ import warm
 import warm.functional as W
 
 
-def conv(x, size, stride=1, expand=1, kernel=3, groups=1):
+def conv_bn_relu(x, size, stride=1, expand=1, kernel=3, groups=1):
     x = W.conv(x, size, kernel, padding=(kernel-1)//2,
         stride=stride, groups=groups, bias=False, )
     return W.batch_norm(x, activation='relu6')
@@ -166,9 +170,9 @@ def conv(x, size, stride=1, expand=1, kernel=3, groups=1):
 def bottleneck(x, size_out, stride, expand):
     size_in = x.shape[1]
     size_mid = size_in*expand
-    y = conv(x, size_mid, kernel=1) if expand > 1 else x
-    y = conv(y, size_mid, stride, kernel=3, groups=size_mid) # depthwise
-    y = W.conv(y, size_out, kernel=1, bias=False) # pointwise linear
+    y = conv_bn_relu(x, size_mid, kernel=1) if expand > 1 else x
+    y = conv_bn_relu(y, size_mid, stride, kernel=3, groups=size_mid)
+    y = W.conv(y, size_out, kernel=1, bias=False)
     y = W.batch_norm(y)
     if stride == 1 and size_in == size_out:
         y += x # residual shortcut
@@ -176,7 +180,7 @@ def bottleneck(x, size_out, stride, expand):
 
 
 def conv1x1(x, *arg):
-    return conv(x, *arg, kernel=1)
+    return conv_bn_relu(x, *arg, kernel=1)
 
 
 def pool(x, *arg):
@@ -189,7 +193,7 @@ def classify(x, size, *arg):
 
 
 default_spec = (
-    (None, 32, 1, 2, conv),  # t, c, n, s, operator
+    (None, 32, 1, 2, conv_bn_relu),  # t, c, n, s, operator
     (1, 16, 1, 1, bottleneck),
     (6, 24, 2, 2, bottleneck),
     (6, 32, 3, 2, bottleneck),
@@ -286,9 +290,11 @@ class MobileNetV2(nn.Module):
                 stride = s if i == 0 else 1
                 features.append(
                     BottleNeck(
-                        input_channel, output_channel, stride, expand_ratio=t))
+                        input_channel, output_channel,
+                        stride, expand_ratio=t))
                 input_channel = output_channel
-        features.append(ConvBNReLU(input_channel, last_channel, kernel_size=1))
+        features.append(ConvBNReLU(input_channel, 
+            last_channel, kernel_size=1))
         self.features = nn.Sequential(*features)
         self.classifier = nn.Sequential(
             nn.Dropout(0.2),

@@ -21,7 +21,7 @@ class MyModule(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size)
-        # more child module definitions
+        # other child module definitions
     def forward(self, x):
         x = self.conv1(x)
         # more forward steps
@@ -42,9 +42,11 @@ class MyWarmModule(nn.Module):
 
 Notice the `warm.engine.prepare_model_(self, input_shape_or_data)` at the end of the `__init__()` method.
 It is required so that PyWarm can infer all shapes of itermediate steps and set up trainable parameters.
-The only argument `input_shape_or_data` can either be a tensor, e.g. `torch.randn(1, 1, 28, 28)`,
-or just the shape, e.g. `[1, 1, 28, 28]` for the model inputs. If the model has multiple inputs,
+The only argument `input_shape_or_data` can either be a tensor, e.g. `torch.randn(2, 1, 28, 28)`,
+or just the shape, e.g. `[2, 1, 28, 28]` for the model inputs. If the model has multiple inputs,
 you may supple them in a list or a dictionary.
+
+**Note**: If the model contains `batch_norm` layers, you need to specify the `Batch` dimension to at least 2.
 
 ## Default shapes
 
@@ -95,9 +97,9 @@ PyTorch way of child module definitions with PyWarm's functions. For example:
 class MyModel(nn.Module):
     def __init__(self):
         super().__init__()
-        # more stuff
+        # other stuff
         self.conv1 = nn.Conv2d(2, 30, 7, padding=3)
-        # more stuff
+        # other stuff
     def forward(self, x):
         y = F.relu(self.conv1(x))
         y = W.conv(y, 40, 3, activation='relu')

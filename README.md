@@ -136,7 +136,7 @@ class MyModule(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size)
-        # more child module definitions
+        # other child module definitions
     def forward(self, x):
         x = self.conv1(x)
         # more forward steps
