@@ -19,11 +19,12 @@ For example, instead of:
 # Torch
 class MyModule(nn.Module):
     def __init__(self):
-        ...
+        super().__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size)
-        ...
+        # more child module definitions
     def forward(self, x):
         x = self.conv1(x)
+        # more forward steps
 ```
 
 You now use the warm functions:
@@ -32,10 +33,11 @@ You now use the warm functions:
 # Warm
 class MyWarmModule(nn.Module):
     def __init__(self):
-        ...
+        super().__init__()
         warm.engine.prepare_model_(self, input_shape_or_data)
     def forward(self, x):
         x = W.conv(x, out_channels, kernel_size) # no in_channels needed
+        # more forward steps
 ```
 
 Notice the `warm.engine.prepare_model_(self, input_shape_or_data)` at the end of the `__init__()` method.
@@ -78,6 +80,11 @@ additional keyword arguments to the underlying nn Module. For example, if you wa
 just use `W.conv(..., stride=2)`. The only thing to remember is that you have to specify the full keyword, rather than
 relying on the position of arguments.
 
+## Optional activation keyword
+
+PyWarm's functional interface support adding an optional keyword argument `activation=name`, where
+name is a callable or just its name, which represents an activation (nonlinearity) functions
+in `torch.nn.init`. By default no activation is used.
 
 ## Mix Match
 
@@ -87,9 +94,10 @@ PyTorch way of child module definitions with PyWarm's functions. For example:
 ```Python
 class MyModel(nn.Module):
     def __init__(self):
-        ...
+        super().__init__()
+        # more stuff
         self.conv1 = nn.Conv2d(2, 30, 7, padding=3)
-        ...
+        # more stuff
     def forward(self, x):
         y = F.relu(self.conv1(x))
         y = W.conv(y, 40, 3, activation='relu')

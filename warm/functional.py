@@ -105,9 +105,10 @@ def lstm(x, size,
     - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LSTM`, as well as `warm.engine.forward`.
         Refer to their docs for details. Some of the additional LSTM arguments: `dropout, bidirectional, batch_first`.
     - `return: Tensor or tuple`; If `tuple_out` set to true, will return `(out, (h_n, c_n)`, otherwise just `out`.
-        `out` has shape `(Batch, Size, Length*Directions)`, where Directions = 2 if `bidirectional` else 1.
-        `h_n` has shape `(num_layers*Directions, Batch, Size)`; The hidden states. 
-        `c_n` has shape `(num_layers*Directions, Batch, Size)`; The cell states. """
+        `out` has shape `(Batch, Size, Length*Directions)`,
+            where Directions = 2 if `bidirectional` else 1.
+        `h_n` is the hidden states with shape `(num_layers*Directions, Batch, Size)`.
+        `c_n` is the cell states with shape `(num_layers*Directions, Batch, Size)`. """
     init = dict(
         weight_hh=init_weight_hh,
         weight_ih=init_weight_ih,
@@ -149,9 +150,10 @@ def gru(*arg, **kw):
     - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.GRU`, as well as `warm.engine.forward`.
         Refer to their docs for details. Some of the additional GRU arguments: `dropout, bidirectional, batch_first`.
     - `return: Tensor or tuple`; If `tuple_out` set to true, will return `(out, (h_n, c_n)`, otherwise just `out`.
-        `out` has shape `(Batch, Size, Length*Directions)`, where `Directions` = 2 if `bidirectional` else 1.
-        `h_n` has shape `(num_layers*Directions, Batch, Size)`; The hidden states. 
-        `c_n` has shape `(num_layers*Directions, Batch, Size)`; The cell states. """
+        `out` has shape `(Batch, Size, Length*Directions)`,
+            where Directions = 2 if `bidirectional` else 1.
+        `h_n` is the hidden states with shape `(num_layers*Directions, Batch, Size)`.
+        `c_n` is the cell states with shape `(num_layers*Directions, Batch, Size)`. """
     return lstm(*arg, base_name='gru', base_class=nn.GRU, **kw)
 
 

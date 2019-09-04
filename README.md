@@ -21,7 +21,7 @@ model training, validation and data handling.
 
 With PyWarm, you can put *all* network data flow logic in the `forward()` method of
 your model, without the need to define children modules in the `__init__()` method.
-This result in a much readable model definition in fewer lines of code.
+This result in a much more readable model definition in fewer lines of code.
 
 ----
 
@@ -135,11 +135,11 @@ import warm.functional as W
 class MyModule(nn.Module):
     def __init__(self):
         super().__init__()
-        ...
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size)
-        ...
+        # more child module definitions
     def forward(self, x):
         x = self.conv1(x)
+        # more forward steps
 ```
 
 -   You can now write in the warm way:
@@ -149,10 +149,10 @@ class MyModule(nn.Module):
 class MyWarmModule(nn.Module):
     def __init__(self):
         super().__init__()
-        ...
         warm.engine.prepare_model_(self, input_shape_or_data)
     def forward(self, x):
         x = W.conv(x, out_channels, kernel_size) # no in_channels needed
+        # more forward steps
 ```
 
 -   Finally, don't forget to warmify the model by adding
@@ -167,6 +167,14 @@ class MyWarmModule(nn.Module):
 
 Check out the [tutorial](https://blue-season.github.io/pywarm/docs/tutorial/) 
 and [examples](https://blue-season.github.io/pywarm/docs/example/) if you want to learn more!
+
+----
+## Testing
+
+Clone the repository first, then
+
+    cd pywarm
+    pytest -v
 
 ----
 ## Documentation
