@@ -737,6 +737,11 @@
     <span class="c1"># 1x1 conv to project channel size of x to y.</span>
 </pre></div>
 
+<ul>
+<li>When warming the model via <code>warm.engine.prepare_model_(self, [2, 3, 32, 32])</code>
+    We set the first <code>Batch</code> dimension to 2 because the model uses <code>batch_norm</code>,
+    which will not work when <code>Batch</code> is 1.</li>
+</ul>
 <hr />
 <h2 id="mobilenet">MobileNet</h2>
 <div class="superfences-tabs">
@@ -815,7 +820,7 @@
 <span class="kn">import</span> <span class="nn">warm.functional</span> <span class="kn">as</span> <span class="nn">W</span>
 
 
-<span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">conv_bn_relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="n">kernel</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">stride</span><span class="o">=</span><span class="n">stride</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="p">)</span>
     <span class="k">return</span> <span class="n">W</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu6&#39;</span><span class="p">)</span>
@@ -824,9 +829,9 @@
 <span class="k">def</span> <span class="nf">bottleneck</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size_out</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">expand</span><span class="p">):</span>
     <span class="n">size_in</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">size_mid</span> <span class="o">=</span> <span class="n">size_in</span><span class="o">*</span><span class="n">expand</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size_mid</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">expand</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">x</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">size_mid</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">size_mid</span><span class="p">)</span> <span class="c1"># depthwise</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">size_out</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c1"># pointwise linear</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">conv_bn_relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size_mid</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">expand</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">x</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">conv_bn_relu</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">size_mid</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">size_mid</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">size_out</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">stride</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">size_in</span> <span class="o">==</span> <span class="n">size_out</span><span class="p">:</span>
         <span class="n">y</span> <span class="o">+=</span> <span class="n">x</span> <span class="c1"># residual shortcut</span>
@@ -834,7 +839,7 @@
 
 
 <span class="k">def</span> <span class="nf">conv1x1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">conv_bn_relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span>
@@ -847,7 +852,7 @@
 
 
 <span class="n">default_spec</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">conv</span><span class="p">),</span>  <span class="c1"># t, c, n, s, operator</span>
+    <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">conv_bn_relu</span><span class="p">),</span>  <span class="c1"># t, c, n, s, operator</span>
     <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bottleneck</span><span class="p">),</span>
     <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bottleneck</span><span class="p">),</span>
     <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bottleneck</span><span class="p">),</span>
@@ -960,7 +965,9 @@
 79
 80
 81
-82</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># code based on torchvision/models/mobilenet.py</span>
+82
+83
+84</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># code based on torchvision/models/mobilenet.py</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="kn">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="kn">as</span> <span class="nn">F</span>
@@ -1026,9 +1033,11 @@
                 <span class="n">stride</span> <span class="o">=</span> <span class="n">s</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
                 <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">BottleNeck</span><span class="p">(</span>
-                        <span class="n">input_channel</span><span class="p">,</span> <span class="n">output_channel</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">expand_ratio</span><span class="o">=</span><span class="n">t</span><span class="p">))</span>
+                        <span class="n">input_channel</span><span class="p">,</span> <span class="n">output_channel</span><span class="p">,</span>
+                        <span class="n">stride</span><span class="p">,</span> <span class="n">expand_ratio</span><span class="o">=</span><span class="n">t</span><span class="p">))</span>
                 <span class="n">input_channel</span> <span class="o">=</span> <span class="n">output_channel</span>
-        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ConvBNReLU</span><span class="p">(</span><span class="n">input_channel</span><span class="p">,</span> <span class="n">last_channel</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ConvBNReLU</span><span class="p">(</span><span class="n">input_channel</span><span class="p">,</span> 
+            <span class="n">last_channel</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">features</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
             <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>

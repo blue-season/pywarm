@@ -16,7 +16,7 @@ import warm.util
 import warm.functional as W
 
 
-def conv(x, size, stride=1, expand=1, kernel=3, groups=1, name=''):
+def conv_bn_relu(x, size, stride=1, expand=1, kernel=3, groups=1, name=''):
     x = W.conv(x, size, kernel, padding=(kernel-1)//2, stride=stride, groups=groups, bias=False,
         name=f'{name}-0', )
     return W.batch_norm(x, activation='relu6', name=f'{name}-1')
@@ -25,9 +25,9 @@ def conv(x, size, stride=1, expand=1, kernel=3, groups=1, name=''):
 def bottleneck(x, size_out, stride, expand, name=''):
     size_in = x.shape[1]
     size_mid = size_in*expand
-    y = conv(x, size_mid, kernel=1, name=f'{name}-conv-0') if expand > 1 else x
-    y = conv(y, size_mid, stride, kernel=3, groups=size_mid, name=f'{name}-conv-{1 if expand > 1 else 0}') # depthwise
-    y = W.conv(y, size_out, kernel=1, bias=False, name=f'{name}-conv-{2 if expand > 1 else 1}') # pointwise linear
+    y = conv_bn_relu(x, size_mid, kernel=1, name=f'{name}-conv-0') if expand > 1 else x
+    y = conv_bn_relu(y, size_mid, stride, kernel=3, groups=size_mid, name=f'{name}-conv-{1 if expand > 1 else 0}')
+    y = W.conv(y, size_out, kernel=1, bias=False, name=f'{name}-conv-{2 if expand > 1 else 1}')
     y = W.batch_norm(y, name=f'{name}-conv-{3 if expand > 1 else 2}')
     if stride == 1 and size_in == size_out:
         y += x # residual shortcut
@@ -35,7 +35,7 @@ def bottleneck(x, size_out, stride, expand, name=''):
 
 
 def conv1x1(x, *arg, **kw):
-    return conv(x, *arg, kernel=1, **kw)
+    return conv_bn_relu(x, *arg, kernel=1, **kw)
 
 
 def pool(x, *arg, **kw):
@@ -48,7 +48,7 @@ def classify(x, size, *arg, **kw):
 
 
 default_spec = (
-    (None, 32, 1, 2, conv),  # t, c, n, s, operator
+    (None, 32, 1, 2, conv_bn_relu),  # t, c, n, s, operator
     (1, 16, 1, 1, bottleneck),
     (6, 24, 2, 2, bottleneck),
     (6, 32, 3, 2, bottleneck),
