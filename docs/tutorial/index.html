@@ -331,6 +331,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#optional-activation-keyword" class="md-nav__link">
+    Optional activation keyword
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mix-match" class="md-nav__link">
     Mix Match
   </a>
@@ -519,6 +526,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#optional-activation-keyword" class="md-nav__link">
+    Optional activation keyword
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mix-match" class="md-nav__link">
     Mix Match
   </a>
@@ -557,21 +571,23 @@ For example, instead of:</p>
 <div class="highlight"><pre><span></span><span class="c1"># Torch</span>
 <span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
-        <span class="o">...</span>
+        <span class="c1"># more child module definitions</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># more forward steps</span>
 </pre></div>
 
 <p>You now use the warm functions:</p>
 <div class="highlight"><pre><span></span><span class="c1"># Warm</span>
 <span class="k">class</span> <span class="nc">MyWarmModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape_or_data</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span> <span class="c1"># no in_channels needed</span>
+        <span class="c1"># more forward steps</span>
 </pre></div>
 
 <p>Notice the <code>warm.engine.prepare_model_(self, input_shape_or_data)</code> at the end of the <code>__init__()</code> method.
@@ -604,14 +620,19 @@ can focus more on the nature of the operation, rather than chores.</p>
 additional keyword arguments to the underlying nn Module. For example, if you want to specify strides to 2 for a conv layer,
 just use <code>W.conv(..., stride=2)</code>. The only thing to remember is that you have to specify the full keyword, rather than
 relying on the position of arguments.</p>
+<h2 id="optional-activation-keyword">Optional activation keyword</h2>
+<p>PyWarm's functional interface support adding an optional keyword argument <code>activation=name</code>, where
+name is a callable or just its name, which represents an activation (nonlinearity) functions
+in <code>torch.nn.init</code>. By default no activation is used.</p>
 <h2 id="mix-match">Mix Match</h2>
 <p>You are not limited to just use PyWarm's functional interface. It is completely ok to mix and match the old
 PyTorch way of child module definitions with PyWarm's functions. For example:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># more stuff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="o">...</span>
+        <span class="c1"># more stuff</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)</span>

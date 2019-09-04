@@ -274,6 +274,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    Testing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     Documentation
   </a>
@@ -477,6 +484,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    Testing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     Documentation
   </a>
@@ -516,7 +530,7 @@ It only aims to simplify the network definition, and does not cover
 model training, validation and data handling.</p>
 <p>With PyWarm, you can put <em>all</em> network data flow logic in the <code>forward()</code> method of
 your model, without the need to define children modules in the <code>__init__()</code> method.
-This result in a much readable model definition in fewer lines of code.</p>
+This result in a much more readable model definition in fewer lines of code.</p>
 <hr />
 <p>For example, a convnet for MNIST:
 (If needed, click the tabs to switch between Warm and Torch versions)</p>
@@ -673,11 +687,11 @@ This result in a much readable model definition in fewer lines of code.</p>
 <span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="o">...</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
-        <span class="o">...</span>
+        <span class="c1"># more child module definitions</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># more forward steps</span>
 </pre></div>
 
 <ul>
@@ -687,10 +701,10 @@ This result in a much readable model definition in fewer lines of code.</p>
 <span class="k">class</span> <span class="nc">MyWarmModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="o">...</span>
         <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape_or_data</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span> <span class="c1"># no in_channels needed</span>
+        <span class="c1"># more forward steps</span>
 </pre></div>
 
 <ul>
@@ -705,6 +719,12 @@ or just its shape, e.g. <code>[1, 1, 28, 28]</code> for MNIST inputs.</p>
 </ul>
 <p>Check out the <a href="https://blue-season.github.io/pywarm/docs/tutorial/">tutorial</a> 
 and <a href="https://blue-season.github.io/pywarm/docs/example/">examples</a> if you want to learn more!</p>
+<hr />
+<h2 id="testing">Testing</h2>
+<p>Clone the repository first, then</p>
+<pre><code>cd pywarm
+pytest -v
+</code></pre>
 <hr />
 <h2 id="documentation">Documentation</h2>
 <ul>

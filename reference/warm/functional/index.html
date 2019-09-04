@@ -667,9 +667,10 @@ Gated Recurrent Unit layer.</p>
 <li><code>**kw: dict</code>; Any additional KWargs are passed down to <code>torch.nn.GRU</code>, as well as <code>warm.engine.forward</code>.
     Refer to their docs for details. Some of the additional GRU arguments: <code>dropout, bidirectional, batch_first</code>.</li>
 <li><code>return: Tensor or tuple</code>; If <code>tuple_out</code> set to true, will return <code>(out, (h_n, c_n)</code>, otherwise just <code>out</code>.
-    <code>out</code> has shape <code>(Batch, Size, Length*Directions)</code>, where <code>Directions</code> = 2 if <code>bidirectional</code> else 1.
-    <code>h_n</code> has shape <code>(num_layers*Directions, Batch, Size)</code>; The hidden states. 
-    <code>c_n</code> has shape <code>(num_layers*Directions, Batch, Size)</code>; The cell states.</li>
+    <code>out</code> has shape <code>(Batch, Size, Length*Directions)</code>,
+        where Directions = 2 if <code>bidirectional</code> else 1.
+    <code>h_n</code> is the hidden states with shape <code>(num_layers*Directions, Batch, Size)</code>.
+    <code>c_n</code> is the cell states with shape <code>(num_layers*Directions, Batch, Size)</code>.</li>
 </ul>
 <hr />
 <h3 id="identity">identity</h3>
@@ -737,9 +738,10 @@ Long Short Term Memory layer.</p>
 <li><code>**kw: dict</code>; Any additional KWargs are passed down to <code>torch.nn.LSTM</code>, as well as <code>warm.engine.forward</code>.
     Refer to their docs for details. Some of the additional LSTM arguments: <code>dropout, bidirectional, batch_first</code>.</li>
 <li><code>return: Tensor or tuple</code>; If <code>tuple_out</code> set to true, will return <code>(out, (h_n, c_n)</code>, otherwise just <code>out</code>.
-    <code>out</code> has shape <code>(Batch, Size, Length*Directions)</code>, where Directions = 2 if <code>bidirectional</code> else 1.
-    <code>h_n</code> has shape <code>(num_layers*Directions, Batch, Size)</code>; The hidden states. 
-    <code>c_n</code> has shape <code>(num_layers*Directions, Batch, Size)</code>; The cell states.</li>
+    <code>out</code> has shape <code>(Batch, Size, Length*Directions)</code>,
+        where Directions = 2 if <code>bidirectional</code> else 1.
+    <code>h_n</code> is the hidden states with shape <code>(num_layers*Directions, Batch, Size)</code>.
+    <code>c_n</code> is the cell states with shape <code>(num_layers*Directions, Batch, Size)</code>.</li>
 </ul>
                 
                   
