@@ -147,7 +147,7 @@ if stride != 1 or in_channels != BasicBlock.expansion*out_channels:
 
 ----
 
-## MobileNet V2
+## MobileNet
 
 ``` Python tab="Warm" linenums="1"
 import torch
@@ -228,18 +228,20 @@ import torch.nn.functional as F
 
 class ConvBNReLU(nn.Sequential):
 
-    def __init__(self, in_planes, out_planes, kernel_size=3, stride=1, groups=1):
+    def __init__(self, in_planes, out_planes, 
+            kernel_size=3, stride=1, groups=1):
         padding = (kernel_size-1)//2
         super(ConvBNReLU, self).__init__(
-            nn.Conv2d(in_planes, out_planes, kernel_size, stride, padding, groups=groups, bias=False),
+            nn.Conv2d(in_planes, out_planes, kernel_size, 
+                stride, padding, groups=groups, bias=False),
             nn.BatchNorm2d(out_planes),
             nn.ReLU6(inplace=True), )
 
 
-class InvertedResidual(nn.Module):
+class BottleNeck(nn.Module):
 
     def __init__(self, inp, oup, stride, expand_ratio):
-        super(InvertedResidual, self).__init__()
+        super().__init__()
         self.stride = stride
         assert stride in [1, 2]
         hidden_dim = int(round(inp * expand_ratio))
@@ -248,7 +250,8 @@ class InvertedResidual(nn.Module):
         if expand_ratio != 1:
             layers.append(ConvBNReLU(inp, hidden_dim, kernel_size=1))
         layers.extend([
-            ConvBNReLU(hidden_dim, hidden_dim, stride=stride, groups=hidden_dim),
+            ConvBNReLU(hidden_dim, hidden_dim, 
+                stride=stride, groups=hidden_dim),
             nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
             nn.BatchNorm2d(oup), ])
         self.conv = nn.Sequential(*layers)
@@ -273,7 +276,7 @@ default_spec = [
 class MobileNetV2(nn.Module):
 
     def __init__(self):
-        super(MobileNetV2, self).__init__()
+        super().__init__()
         input_channel = 32
         last_channel = 1280
         features = [ConvBNReLU(3, input_channel, stride=2)]
@@ -281,7 +284,9 @@ class MobileNetV2(nn.Module):
             output_channel = c
             for i in range(n):
                 stride = s if i == 0 else 1
-                features.append(InvertedResidual(input_channel, output_channel, stride, expand_ratio=t))
+                features.append(
+                    BottleNeck(
+                        input_channel, output_channel, stride, expand_ratio=t))
                 input_channel = output_channel
         features.append(ConvBNReLU(input_channel, last_channel, kernel_size=1))
         self.features = nn.Sequential(*features)
