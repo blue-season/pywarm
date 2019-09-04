@@ -86,7 +86,7 @@ relying on the position of arguments.
 
 PyWarm's functional interface support adding an optional keyword argument `activation=name`, where
 name is a callable or just its name, which represents an activation (nonlinearity) functions
-in `torch.nn.init`. By default no activation is used.
+in `torch.nn.functional` or just `torch`. By default no activation is used.
 
 ## Mix Match
 
