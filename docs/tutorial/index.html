@@ -624,7 +624,7 @@ relying on the position of arguments.</p>
 <h2 id="optional-activation-keyword">Optional activation keyword</h2>
 <p>PyWarm's functional interface support adding an optional keyword argument <code>activation=name</code>, where
 name is a callable or just its name, which represents an activation (nonlinearity) functions
-in <code>torch.nn.init</code>. By default no activation is used.</p>
+in <code>torch.nn.functional</code> or just <code>torch</code>. By default no activation is used.</p>
 <h2 id="mix-match">Mix Match</h2>
 <p>You are not limited to just use PyWarm's functional interface. It is completely ok to mix and match the old
 PyTorch way of child module definitions with PyWarm's functions. For example:</p>
