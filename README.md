@@ -17,7 +17,7 @@ A cleaner way to build neural networks for PyTorch.
 
 PyWarm is a high-level neural network construction API for PyTorch.
 It only aims to simplify the network definition, and does not cover
-model training, validation and data handling.
+model training, validation or data handling.
 
 With PyWarm, you can put *all* network data flow logic in the `forward()` method of
 your model, without the need to define children modules in the `__init__()` method.
@@ -41,7 +41,7 @@ class ConvNet(nn.Module):
 
     def __init__(self):
         super().__init__()
-        warm.engine.prepare_model_(self, [1, 1, 28, 28])
+        warm.engine.prepare_model_(self, [2, 1, 28, 28])
 
     def forward(self, x):
         x = W.conv(x, 20, 5, activation='relu')
@@ -124,7 +124,7 @@ import warm
 import warm.functional as W
 ```
 
--   Second, delete child module definitions in the model's `__init__()` method.
+-   Second, remove child module definitions in the model's `__init__()` method.
     In stead, use `W.conv`, `W.linear` ... etc. in the model's `forward()` method,
     just like how you would use torch nn functional `F.max_pool2d`, `F.relu` ... etc.
 
@@ -161,7 +161,7 @@ class MyWarmModule(nn.Module):
 
     at the end of the model's `__init__()` method. You need to supply
     `input_shape_or_data`, which is either a tensor of input data, 
-    or just its shape, e.g. `[1, 1, 28, 28]` for MNIST inputs.
+    or just its shape, e.g. `[2, 1, 28, 28]` for MNIST inputs.
     
     The model is now ready to use, just like any other PyTorch models.
 
@@ -178,6 +178,8 @@ Clone the repository first, then
 
 ----
 ## Documentation
+
+Documentations are generated using the excellent [Portray](https://timothycrosley.github.io/portray/) package.
 
 -   [Examples](https://blue-season.github.io/pywarm/docs/example/)
 
