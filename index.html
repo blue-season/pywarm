@@ -522,14 +522,15 @@
 <p><a href="https://github.com/blue-season/pywarm"><img alt="PyPI Python Version" src="https://img.shields.io/pypi/pyversions/pywarm" /></a>
 <a href="https://pypi.org/project/pywarm/"><img alt="PyPI Version" src="https://img.shields.io/pypi/v/pywarm" /></a>
 <a href="https://github.com/blue-season/pywarm/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/blue-season/pywarm" /></a></p>
-<p>|  <a href="https://blue-season.github.io/pywarm/docs/example/">Examples</a>  |  <a href="https://blue-season.github.io/pywarm/docs/tutorial/">Tutorial</a>  |   <a href="https://blue-season.github.io/pywarm/reference/warm/functional/">API reference</a>  |  </p>
+<p><a href="https://blue-season.github.io/pywarm/docs/example/">Examples</a>  |  <a href="https://blue-season.github.io/pywarm/docs/tutorial/">Tutorial</a>  |   <a href="https://blue-season.github.io/pywarm/reference/warm/functional/">API reference</a></p>
 <hr />
 <h2 id="introduction">Introduction</h2>
 <p>PyWarm is a high-level neural network construction API for PyTorch.
 It only aims to simplify the network definition, and does not cover
-model training, validation and data handling.</p>
+model training, validation or data handling.</p>
 <p>With PyWarm, you can put <em>all</em> network data flow logic in the <code>forward()</code> method of
-your model, without the need to define children modules in the <code>__init__()</code> method.
+your model, without the need to define children modules in the <code>__init__()</code> method
+and then call it again in the <code>forward()</code>.
 This result in a much more readable model definition in fewer lines of code.</p>
 <hr />
 <p>For example, a convnet for MNIST:
@@ -569,7 +570,7 @@ This result in a much more readable model definition in fewer lines of code.</p>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
+        <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)</span>
@@ -677,7 +678,7 @@ This result in a much more readable model definition in fewer lines of code.</p>
 </pre></div></p>
 </li>
 <li>
-<p>Second, delete child module definitions in the model's <code>__init__()</code> method.
+<p>Second, remove child module definitions in the model's <code>__init__()</code> method.
     In stead, use <code>W.conv</code>, <code>W.linear</code> ... etc. in the model's <code>forward()</code> method,
     just like how you would use torch nn functional <code>F.max_pool2d</code>, <code>F.relu</code> ... etc.</p>
 <p>For example, instead of writing:</p>
@@ -713,7 +714,7 @@ This result in a much more readable model definition in fewer lines of code.</p>
 <p><code>warm.engine.prepare_model_(self, input_shape_or_data)</code></p>
 <p>at the end of the model's <code>__init__()</code> method. You need to supply
 <code>input_shape_or_data</code>, which is either a tensor of input data, 
-or just its shape, e.g. <code>[1, 1, 28, 28]</code> for MNIST inputs.</p>
+or just its shape, e.g. <code>[2, 1, 28, 28]</code> for MNIST inputs.</p>
 <p>The model is now ready to use, just like any other PyTorch models.</p>
 </li>
 </ul>
@@ -727,6 +728,7 @@ pytest -v
 </code></pre>
 <hr />
 <h2 id="documentation">Documentation</h2>
+<p>Documentations are generated using the excellent <a href="https://timothycrosley.github.io/portray/">Portray</a> package.</p>
 <ul>
 <li>
 <p><a href="https://blue-season.github.io/pywarm/docs/example/">Examples</a></p>

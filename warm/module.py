@@ -1,7 +1,42 @@
 # 08-27-2019;
 """
 Custom modules to enhance the nn Sequential experience.
+
+PyWarm's core concept is to use a functional interface to simplify network building.
+However, if you still prefer the classical way of defining child modules in `__init__()`,
+Pywarm provides some utility modules to help organize child modules better.
+
+`Lambda` can be used to wrap one line data transformations, like `x.view()`, `x.permute()` etc, into modules.
+
+`Sequential` is an extension to `nn.Sequential` that better accomodates PyTorch RNNs.
+
+`Shortcut` is another extension to `nn.Sequential` that will also perform a shortcut addition (AKA residual connection)
+for the input with output, so that residual blocks can be written in an entire sequential way.
+
+For example, to define the basic block type for resnet:
+
+
+```Python
+import torch.nn as nn
+import warm.module as wm
+
+
+def basic_block(size_in, size_out, stride=1):
+    block = wm.Shortcut(
+        nn.Conv2d(size_in, size_out, 3, stride, 1, bias=False),
+        nn.BatchNorm2d(size_out),
+        nn.ReLU(),
+        nn.Conv2d(size_out, size_out, 3, 1, 1, bias=False),
+        nn.BatchNorm2d(size_out),
+        projection=wm.Lambda(
+            lambda x: x if x.shape[1] == size_out else nn.Sequential(
+                nn.Conv2d(size_in, size_out, 1, stride, bias=False),
+                nn.BatchNorm2d(size_out), )(x), ), )
+    return block
+```
 """
+
+
 import torch.nn as nn
 
 
@@ -13,14 +48,12 @@ class Lambda(nn.Module):
         self.arg = arg
         self.kw = kw
     def forward(self, x):
-        """ Forward will be perform at every call. """
         return self.fn(x, *self.arg, **self.kw)
 
 
 class Sequential(nn.Sequential):
     """ Similar to `nn.Sequential`, except that child modules can have multiple outputs (e.g. `nn.RNN`). """
     def forward(self, x):
-        """ Forward will be perform at every call. """
         for module in self._modules.values():
             if isinstance(x, tuple):
                 try:

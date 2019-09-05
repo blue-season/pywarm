@@ -632,6 +632,31 @@
                 
                 <h1 id="module-warmmodule">Module warm.module</h1>
 <p>Custom modules to enhance the nn Sequential experience.</p>
+<p>PyWarm's core concept is to use a functional interface to simplify network building.
+However, if you still prefer the classical way of defining child modules in <code>__init__()</code>,
+Pywarm provides some utility modules to help organize child modules better.</p>
+<p><code>Lambda</code> can be used to wrap one line data transformations, like <code>x.view()</code>, <code>x.permute()</code> etc, into modules.</p>
+<p><code>Sequential</code> is an extension to <code>nn.Sequential</code> that better accomodates PyTorch RNNs.</p>
+<p><code>Shortcut</code> is another extension to <code>nn.Sequential</code> that will also perform a shortcut addition (AKA residual connection)
+for the input with output, so that residual blocks can be written in an entire sequential way.</p>
+<p>For example, to define the basic block type for resnet:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="kn">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">warm.module</span> <span class="kn">as</span> <span class="nn">wm</span>
+
+<span class="k">def</span> <span class="nf">basic_block</span><span class="p">(</span><span class="n">size_in</span><span class="p">,</span> <span class="n">size_out</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">block</span> <span class="o">=</span> <span class="n">wm</span><span class="o">.</span><span class="n">Shortcut</span><span class="p">(</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">size_in</span><span class="p">,</span> <span class="n">size_out</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">size_out</span><span class="p">),</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">size_out</span><span class="p">,</span> <span class="n">size_out</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">size_out</span><span class="p">),</span>
+        <span class="n">projection</span><span class="o">=</span><span class="n">wm</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">size_out</span> <span class="k">else</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">size_in</span><span class="p">,</span> <span class="n">size_out</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">size_out</span><span class="p">),</span> <span class="p">)(</span><span class="n">x</span><span class="p">),</span> <span class="p">),</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">block</span>
+</pre></div>
+
 <h2 id="classes">Classes</h2>
 <hr />
 <h3 id="lambda">Lambda</h3>
@@ -653,7 +678,13 @@
     <span class="bp">self</span><span class="p">,</span>
   <span class="n">x</span> 
 </pre></div>
-Forward will be perform at every call.</p>
+Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<p>.. note::
+    Although the recipe for forward pass needs to be defined within
+    this function, one should call the :class:<code>Module</code> instance afterwards
+    instead of this since the former takes care of running the
+    registered hooks while the latter silently ignores them.</p>
 <hr />
 <h3 id="sequential">Sequential</h3>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
@@ -677,7 +708,13 @@ Forward will be perform at every call.</p>
     <span class="bp">self</span><span class="p">,</span>
   <span class="n">x</span> 
 </pre></div>
-Forward will be perform at every call.</p>
+Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<p>.. note::
+    Although the recipe for forward pass needs to be defined within
+    this function, one should call the :class:<code>Module</code> instance afterwards
+    instead of this since the former takes care of running the
+    registered hooks while the latter silently ignores them.</p>
 <hr />
 <h3 id="shortcut">Shortcut</h3>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
