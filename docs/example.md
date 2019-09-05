@@ -62,30 +62,41 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+def conv3x3(size_in, size_out, stride=1):
+    return nn.Conv2d(size_in, size_out, kernel_size=3, stride=stride,
+        padding=1, groups=1, bias=False, dilation=1, )
+
+
+def conv1x1(size_in, size_out, stride=1):
+    return nn.Conv2d(size_in, size_out, kernel_size=1, stride=stride,
+        padding=0, groups=1, bias=False, dilation=1, )
+
+
 class BasicBlock(nn.Module):
 
     expansion = 1
 
-    def __init__(self, in_channels, out_channels, stride=1):
+    def __init__(self, size_in, size_out, stride=1, downsample=None):
         super().__init__()
-        self.residual_function = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels,
-                kernel_size=3, stride=stride, padding=1, bias=False),
-            nn.BatchNorm2d(out_channels),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels*BasicBlock.expansion,
-                kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(out_channels * BasicBlock.expansion), )
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_channels != BasicBlock.expansion*out_channels:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels*BasicBlock.expansion,
-                    kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(out_channels*BasicBlock.expansion), )
+        self.conv1 = conv3x3(size_in, size_out, stride)
+        self.bn1 = nn.BatchNorm2d(size_out)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = conv3x3(size_out, size_out)
+        self.bn2 = nn.BatchNorm2d(size_out)
+        self.downsample = downsample
 
     def forward(self, x):
-        y = self.residual_function(x) + self.shortcut(x)
-        return F.relu(y)
+        identity = x
+        y = self.conv1(x)
+        y = self.bn1(y)
+        y = self.relu(y)
+        y = self.conv2(y)
+        y = self.bn2(y)
+        if self.downsample is not None:
+            identity = self.downsample(x)
+        y += identity
+        y = self.relu(y)
+        return y
 
 
 class ResNet(nn.Module):
@@ -93,35 +104,43 @@ class ResNet(nn.Module):
     def __init__(self,
             block=BasicBlock, num_block=[2, 2, 2, 2]):
         super().__init__()
-        self.in_channels = 64
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
-                bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(inplace=True), )
-        self.conv2 = self._make_stack(block, 64, num_block[0], 1)
-        self.conv3 = self._make_stack(block, 128, num_block[1], 2)
-        self.conv4 = self._make_stack(block, 256, num_block[2], 2)
-        self.conv5 = self._make_stack(block, 512, num_block[3], 2)
-        self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512*block.expansion, 1000)
+        self.size_in = 64
+        self.conv1 = nn.Conv2d(3, self.size_in, kernel_size=7, stride=2,
+            padding=3, bias=False)
+        self.bn1 = nn.BatchNorm2d(self.size_in)
+        self.relu = nn.ReLU(inplace=True)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        self.stack1 = self._make_stack(block, 64, num_block[0], 1)
+        self.stack2 = self._make_stack(block, 128, num_block[1], 2)
+        self.stack3 = self._make_stack(block, 256, num_block[2], 2)
+        self.stack4 = self._make_stack(block, 512, num_block[3], 2)
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.fc = nn.Linear(512, 1000)
 
-    def _make_stack(self, block, out_channels, num_blocks, stride):
-        strides = [stride] + [1]*(num_blocks-1)
+    def _make_stack(self, block, size_out, num_blocks, stride):
+        downsample = None
+        if stride != 1 or self.size_in != size_out:
+            downsample = nn.Sequential(
+                conv1x1(self.size_in, size_out, stride),
+                nn.BatchNorm2d(size_out), )
         stacks = []
         for stride in strides:
-            stacks.append(block(self.in_channels, out_channels, stride))
-            self.in_channels = out_channels*block.expansion        
+            stacks.append(
+                block(self.size_in, size_out, stride, downsample))
+            self.size_in = size_out
         return nn.Sequential(*stacks)
 
     def forward(self, x):
         y = self.conv1(x)
-        y = self.conv2(y)
-        y = self.conv3(y)
-        y = self.conv4(y)
-        y = self.conv5(y)
+        y = self.bn1(y)
+        y = self.relu(y)
+        y = self.maxpool(y)
+        y = self.stack1(y)
+        y = self.stack2(y)
+        y = self.stack3(y)
+        y = self.stack4(y)
         y = self.avg_pool(y)
-        y = y.view(y.size(0), -1)
+        y = torch.flatten(y, 1)
         y = self.fc(y)
         return y
 
@@ -129,23 +148,10 @@ class ResNet(nn.Module):
 resnet18 = ResNet()
 ```
 
--   The vanilla PyTorch version uses a `expansion` constant in the model class
-    to track input - output size changes. It is not needed in the PyWarm version.
-    As a result, the logic to determine additional projection is much more
-    straightforward in PyWarm:
-
-```Python 
-# Warm
-if y.shape[1] != x.shape[1]:
-    # 1x1 conv to project channel size of x to y.
+-   The PyWarm version significantly reduces self-repititions of code as in the vanilla PyTorch version.
 
 
-# Torch
-if stride != 1 or in_channels != BasicBlock.expansion*out_channels:
-    # 1x1 conv to project channel size of x to y.
-```
-
--   When warming the model via `warm.engine.prepare_model_(self, [2, 3, 32, 32])`
+-   Note that when warming the model via `warm.engine.prepare_model_(self, [2, 3, 32, 32])`
     We set the first `Batch` dimension to 2 because the model uses `batch_norm`,
     which will not work when `Batch` is 1.
 

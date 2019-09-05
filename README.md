@@ -9,7 +9,7 @@ A cleaner way to build neural networks for PyTorch.
 [![PyPI Version](https://img.shields.io/pypi/v/pywarm)](https://pypi.org/project/pywarm/)
 [![License](https://img.shields.io/github/license/blue-season/pywarm)](https://github.com/blue-season/pywarm/blob/master/LICENSE)
 
-|  [Examples](https://blue-season.github.io/pywarm/docs/example/)  |  [Tutorial](https://blue-season.github.io/pywarm/docs/tutorial/)  |   [API reference](https://blue-season.github.io/pywarm/reference/warm/functional/)  |  
+[Examples](https://blue-season.github.io/pywarm/docs/example/)  |  [Tutorial](https://blue-season.github.io/pywarm/docs/tutorial/)  |   [API reference](https://blue-season.github.io/pywarm/reference/warm/functional/)
 
 ----
 
@@ -20,7 +20,8 @@ It only aims to simplify the network definition, and does not cover
 model training, validation or data handling.
 
 With PyWarm, you can put *all* network data flow logic in the `forward()` method of
-your model, without the need to define children modules in the `__init__()` method.
+your model, without the need to define children modules in the `__init__()` method
+and then call it again in the `forward()`.
 This result in a much more readable model definition in fewer lines of code.
 
 ----
