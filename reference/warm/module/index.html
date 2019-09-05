@@ -463,6 +463,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#methods_2" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forward_2" class="md-nav__link">
+    forward
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -606,6 +620,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#methods_2" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forward_2" class="md-nav__link">
+    forward
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -667,6 +695,11 @@ for the input with output, so that residual blocks can be written in an entire s
 </pre></div>
 
 <p>Wraps a callable and all its call arguments.</p>
+<ul>
+<li><code>fn: callable</code>; The callable being wrapped.</li>
+<li><code>*arg: list</code>; Arguments to be passed to <code>fn</code>.</li>
+<li><code>**kw: dict</code>; KWargs to be passed to <code>fn</code>.</li>
+</ul>
 <h3 id="ancestors-in-mro">Ancestors (in MRO)</h3>
 <ul>
 <li>torch.nn.modules.module.Module</li>
@@ -674,17 +707,11 @@ for the input with output, so that residual blocks can be written in an entire s
 <h3 id="methods">Methods</h3>
 <hr />
 <h3 id="forward">forward</h3>
-<p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
     <span class="bp">self</span><span class="p">,</span>
   <span class="n">x</span> 
 </pre></div>
-Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<p>.. note::
-    Although the recipe for forward pass needs to be defined within
-    this function, one should call the :class:<code>Module</code> instance afterwards
-    instead of this since the former takes care of running the
-    registered hooks while the latter silently ignores them.</p>
+
 <hr />
 <h3 id="sequential">Sequential</h3>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
@@ -692,6 +719,9 @@ Defines the computation performed at every call.</p>
 </pre></div>
 
 <p>Similar to <code>nn.Sequential</code>, except that child modules can have multiple outputs (e.g. <code>nn.RNN</code>).</p>
+<ul>
+<li><code>*arg: list of Modules</code>; Same as <code>nn.Sequential</code>.</li>
+</ul>
 <h3 id="ancestors-in-mro_1">Ancestors (in MRO)</h3>
 <ul>
 <li>torch.nn.modules.container.Sequential</li>
@@ -704,17 +734,11 @@ Defines the computation performed at every call.</p>
 <h3 id="methods_1">Methods</h3>
 <hr />
 <h3 id="forward_1">forward</h3>
-<p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
     <span class="bp">self</span><span class="p">,</span>
   <span class="n">x</span> 
 </pre></div>
-Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<p>.. note::
-    Although the recipe for forward pass needs to be defined within
-    this function, one should call the :class:<code>Module</code> instance afterwards
-    instead of this since the former takes care of running the
-    registered hooks while the latter silently ignores them.</p>
+
 <hr />
 <h3 id="shortcut">Shortcut</h3>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
@@ -734,6 +758,13 @@ Defines the computation performed at every call.</p>
 <li>torch.nn.modules.container.Sequential</li>
 <li>torch.nn.modules.module.Module</li>
 </ul>
+<h3 id="methods_2">Methods</h3>
+<hr />
+<h3 id="forward_2">forward</h3>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
+    <span class="bp">self</span><span class="p">,</span>
+  <span class="n">x</span> 
+</pre></div>
                 
                   
                 
