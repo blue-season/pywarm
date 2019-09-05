@@ -150,7 +150,6 @@ resnet18 = ResNet()
 
 -   The PyWarm version significantly reduces self-repititions of code as in the vanilla PyTorch version.
 
-
 -   Note that when warming the model via `warm.engine.prepare_model_(self, [2, 3, 32, 32])`
     We set the first `Batch` dimension to 2 because the model uses `batch_norm`,
     which will not work when `Batch` is 1.

@@ -22,7 +22,7 @@ import warm.module as wm
 
 
 def basic_block(size_in, size_out, stride=1):
-    return wm.Shortcut(
+    block = wm.Shortcut(
         nn.Conv2d(size_in, size_out, 3, stride, 1, bias=False),
         nn.BatchNorm2d(size_out),
         nn.ReLU(),
@@ -32,6 +32,7 @@ def basic_block(size_in, size_out, stride=1):
             lambda x: x if x.shape[1] == size_out else nn.Sequential(
                 nn.Conv2d(size_in, size_out, 1, stride, bias=False),
                 nn.BatchNorm2d(size_out), )(x), ), )
+    return block
 ```
 """
 
@@ -40,19 +41,25 @@ import torch.nn as nn
 
 
 class Lambda(nn.Module):
-    """ Wraps a callable and all its call arguments. """
+    """ Wraps a callable and all its call arguments.\n
+    - `fn: callable`; The callable being wrapped.
+    - `*arg: list`; Arguments to be passed to `fn`.
+    - `**kw: dict`; KWargs to be passed to `fn`. """
     def __init__(self, fn, *arg, **kw):
         super().__init__()
         self.fn = fn
         self.arg = arg
         self.kw = kw
     def forward(self, x):
+        """ """
         return self.fn(x, *self.arg, **self.kw)
 
 
 class Sequential(nn.Sequential):
-    """ Similar to `nn.Sequential`, except that child modules can have multiple outputs (e.g. `nn.RNN`). """
+    """ Similar to `nn.Sequential`, except that child modules can have multiple outputs (e.g. `nn.RNN`).\n
+    - `*arg: list of Modules`; Same as `nn.Sequential`. """
     def forward(self, x):
+        """ """
         for module in self._modules.values():
             if isinstance(x, tuple):
                 try:
@@ -73,4 +80,5 @@ class Shortcut(Sequential):
         super().__init__(*arg)
         self.projection = projection or nn.Identity()
     def forward(self, x):
+        """ """
         return super().forward(x)+self.projection(x)
