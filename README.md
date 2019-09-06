@@ -15,7 +15,7 @@ A cleaner way to build neural networks for PyTorch.
 
 ## Introduction
 
-PyWarm is a high-level neural network construction API for PyTorch.
+PyWarm is a lightweight, high-level neural network construction API for PyTorch.
 It only aims to simplify the network definition, and does not cover
 model training, validation or data handling.
 

@@ -6,11 +6,11 @@ PyWarm's core concept is to use a functional interface to simplify network build
 However, if you still prefer the classical way of defining child modules in `__init__()`,
 Pywarm provides some utility modules to help organize child modules better.
 
-`Lambda` can be used to wrap one line data transformations, like `x.view()`, `x.permute()` etc, into modules.
+- `Lambda` can be used to wrap one line data transformations, like `x.view()`, `x.permute()` etc, into modules.
 
-`Sequential` is an extension to `nn.Sequential` that better accomodates PyTorch RNNs.
+- `Sequential` is an extension to `nn.Sequential` that better accomodates PyTorch RNNs.
 
-`Shortcut` is another extension to `nn.Sequential` that will also perform a shortcut addition (AKA residual connection)
+- `Shortcut` is another extension to `nn.Sequential` that will also perform a shortcut addition (AKA residual connection)
 for the input with output, so that residual blocks can be written in an entire sequential way.
 
 For example, to define the basic block type for resnet:
