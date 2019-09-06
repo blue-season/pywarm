@@ -185,7 +185,7 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
         mask=None, causal=False, in_shape='BCD', **kw):
     """ Transformer layer.\n
     This layer covers functionality of `Transformer`, `TransformerEncoder`, and `TransformerDecoder`.
-    See `[torch.nn.Transformer](https://pytorch.org/docs/stable/nn.html#transformer)` for more details.
+    See `[torch.nn.Transformer](https://pytorch.org/docs/stable/nn.html#transformer)` for more details.\n
     - `x: Tensor`; The source sequence, with shape `(Batch, Channel, LengthX)`.
         `Channel` is usually from embedding.
     - `y: None or Tensor`; The target sequence. Also with shape `(Batch, Channel, LengthY)`.
