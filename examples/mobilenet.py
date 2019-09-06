@@ -1,7 +1,7 @@
 # 09-03-2019;
 """
-Construct a WarmMobileNetV2() using PyWarm, then download state dicts
-for torchvision.models.mobilenet_v2(), load into WarmMobileNetV2(),
+Construct a WarmMobileNetV2() using PyWarm, then copy state dicts
+from torchvision.models.mobilenet_v2() into WarmMobileNetV2(),
 compare if it produce identical results as the official one.
 """
 from pathlib import Path

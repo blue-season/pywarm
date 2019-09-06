@@ -2,7 +2,9 @@
 """
 Wraps around various torch.nn Modules to fit into a functional interface.
 """
+import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from warm import engine
 
 
@@ -176,4 +178,56 @@ def dropout(x, rate=0.5, by_channel=False, **kw):
         base_class=[nn.Dropout, nn.Dropout2d][by_channel],
         base_kw={'p':rate},
         base_shape=[None, 'BCD'][by_channel], )
+    return engine.forward(x, **{**inferred_kw, **kw})
+
+
+def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
+        mask=None, causal=False, in_shape='BCD', **kw):
+    """ Transformer layer.\n
+    This layer covers functionality of `Transformer`, `TransformerEncoder`, and `TransformerDecoder`.
+    See `[torch.nn.Transformer](https://pytorch.org/docs/stable/nn.html#transformer)` for more details.
+    - `x: Tensor`; The source sequence, with shape `(Batch, Channel, LengthX)`.
+        `Channel` is usually from embedding.
+    - `y: None or Tensor`; The target sequence. Also with shape `(Batch, Channel, LengthY)`.
+        If not present, default to equal `x`.
+    - `num_encoder: int`; Number of encoder layers. Set to 0 to disable encoder and use only decoder. Default 6.
+    - `num_decoder: int`; Number of decoder layers. Set to 0 to disable decoder and use only encoder. Default 6.
+    - `num_head: int`; Number of heads for multi-headed attention. Default 8.
+    - `mask: None or dict`; Keys are among: `src_mask`, `tgt_mask, `memory_mask`,
+        `src_key_padding_mask`, `tgt_key_padding_mask`, `memory_key_padding_mask`.
+        See the `forward` method of `torch.nn.Transformer` for details.
+    - `causal: bool`; Default false. if true, will add causal masks to source and target, so that
+        current value only depends on the past, not the future, in the sequences.
+    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.Transformer`, as well as `warm.engine.forward`.
+    - `return: Tensor`; Same shape as `y`, if `num_decoder` > 0. Otherwise same shape as `x`. """
+    def _causal_mask(n):
+        mask = (torch.triu(torch.ones(n, n)) == 1).transpose(0, 1)
+        return mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
+    if y is None:
+        y = x
+    y = permute(y, in_shape, 'DBC')
+    mask = mask or {}
+    if causal:
+        i = in_shape.find('D')
+        mx = _causal_mask(x.shape[i])
+        mask['src_mask'] = mask.pop('src_mask', 0.0)+mx
+        my = _causal_mask(y.shape[0])
+        mask['tgt_mask'] = mask.pop('tgt_mask', 0.0)+my
+    encoder = identity if num_encoder == 0 else None
+    decoder = identity if num_decoder == 0 else None
+    inferred_kw = dict(
+        base_name='transformer',
+        base_class=nn.Transformer,
+        base_shape='DBC',
+        base_kw=dict(
+            d_model=x.shape[in_shape.find('C')],
+            custom_encoder=encoder,
+            custom_decoder=decoder,
+            nhead=num_head,
+            num_encoder_layers=num_encoder,
+            num_decoder_layers=num_decoder, 
+            **engine.unused_kwargs(kw), ),
+        in_shape=in_shape,
+        forward_kw=mask,
+        forward_arg=(y, ), )
     return engine.forward(x, **{**inferred_kw, **kw})

@@ -331,15 +331,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optional-activation-keyword" class="md-nav__link">
-    Optional activation keyword
+  <a href="#parameter-initialization-per-usage" class="md-nav__link">
+    Parameter initialization per usage
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mix-match" class="md-nav__link">
-    Mix Match
+  <a href="#apply-nonlinearity-to-the-output" class="md-nav__link">
+    Apply nonlinearity to the output
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mix-and-match" class="md-nav__link">
+    Mix and Match
   </a>
   
 </li>
@@ -526,15 +533,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#optional-activation-keyword" class="md-nav__link">
-    Optional activation keyword
+  <a href="#parameter-initialization-per-usage" class="md-nav__link">
+    Parameter initialization per usage
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mix-match" class="md-nav__link">
-    Mix Match
+  <a href="#apply-nonlinearity-to-the-output" class="md-nav__link">
+    Apply nonlinearity to the output
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mix-and-match" class="md-nav__link">
+    Mix and Match
   </a>
   
 </li>
@@ -614,18 +628,29 @@ can replace them all.</p>
 <h2 id="shape-inference">Shape inference</h2>
 <p>Many neural network layers result in a transformation of shapes, for example a convolution operation changes
 shape from <code>(Batch, ChannelIn, *)</code> to <code>(Batch, ChannelOut, *)</code>. PyTorch nn Modules require the users to keep track of
-both <code>in_channels</code> and <code>out_channels</code>. PyWarm relives this pain by inferring the <code>in_channels</code> for you, so you
+both <code>in_channels</code> and <code>out_channels</code>. PyWarm relieves this pain by inferring the <code>in_channels</code> for you, so you
 can focus more on the nature of the operation, rather than chores.</p>
 <h2 id="argument-passdown">Argument passdown</h2>
 <p>If a PyWarm function's signature does not specify all possible argument of its nn Module couterpart, it will pass down
 additional keyword arguments to the underlying nn Module. For example, if you want to specify strides to 2 for a conv layer,
 just use <code>W.conv(..., stride=2)</code>. The only thing to remember is that you have to specify the full keyword, rather than
 relying on the position of arguments.</p>
-<h2 id="optional-activation-keyword">Optional activation keyword</h2>
+<h2 id="parameter-initialization-per-usage">Parameter initialization per usage</h2>
+<p>Unlike PyTorch's approach, paramter initialization can be specified directly in PyWarm's functional interface.
+For example:</p>
+<p><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">init_weight</span><span class="o">=</span><span class="s1">&#39;kaiming_uniform_&#39;</span><span class="p">)</span>
+</pre></div>
+This makes it easier to create layer specific initialization in PyWarm. You no long need to go through
+<code>self.modules()</code> and <code>self.parameters()</code> to create customized initializations.</p>
+<p>By default, PyWarm will look into <code>torch.nn.init</code> for initialization function names.
+Alternatively, you may just specify a callable, or a tuple <code>(fn, kwargs)</code> if the callable accepts more than 1 input.</p>
+<p>If the initialization is not specified or <code>None</code> is used, the corresponding layer will get default initializations as specified
+in <code>torch.nn</code> modules. </p>
+<h2 id="apply-nonlinearity-to-the-output">Apply nonlinearity to the output</h2>
 <p>PyWarm's functional interface support adding an optional keyword argument <code>activation=name</code>, where
 name is a callable or just its name, which represents an activation (nonlinearity) functions
 in <code>torch.nn.functional</code> or just <code>torch</code>. By default no activation is used.</p>
-<h2 id="mix-match">Mix Match</h2>
+<h2 id="mix-and-match">Mix and Match</h2>
 <p>You are not limited to just use PyWarm's functional interface. It is completely ok to mix and match the old
 PyTorch way of child module definitions with PyWarm's functions. For example:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>

@@ -1,7 +1,7 @@
 # 08-29-2019;
 """
-Construct a WarmResNet() using PyWarm, then download state dicts
-for torchvision.models.resnet18(), load into WarmResNet(),
+Construct a WarmResNet() using PyWarm, then copy state dicts
+from torchvision.models.resnet18() into WarmResNet(),
 compare if it produce identical results as the official one.
 """
 from pathlib import Path

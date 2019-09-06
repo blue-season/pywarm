@@ -411,6 +411,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#transformer" class="md-nav__link">
+    transformer
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -546,6 +553,13 @@
           <li class="md-nav__item">
   <a href="#lstm" class="md-nav__link">
     lstm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transformer" class="md-nav__link">
+    transformer
   </a>
   
 </li>
@@ -743,6 +757,35 @@ Long Short Term Memory layer.</p>
     <code>h_n</code> is the hidden states with shape <code>(num_layers*Directions, Batch, Size)</code>.
     <code>c_n</code> is the cell states with shape <code>(num_layers*Directions, Batch, Size)</code>.</li>
 </ul>
+<hr />
+<h3 id="transformer">transformer</h3>
+<p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
+    <span class="n">x</span><span class="p">,</span>
+  <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">num_encoder</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+  <span class="n">num_decoder</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+  <span class="n">num_head</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+  <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">causal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+  <span class="n">in_shape</span><span class="o">=</span><span class="s1">&#39;BCD&#39;</span><span class="p">,</span>
+  <span class="o">**</span><span class="n">kw</span> 
+</pre></div>
+Transformer layer.</p>
+<p>This layer covers functionality of <code>Transformer</code>, <code>TransformerEncoder</code>, and <code>TransformerDecoder</code>.
+See <code>[torch.nn.Transformer](https://pytorch.org/docs/stable/nn.html#transformer)</code> for more details.
+- <code>x: Tensor</code>; The source sequence, with shape <code>(Batch, Channel, LengthX)</code>.
+    <code>Channel</code> is usually from embedding.
+- <code>y: None or Tensor</code>; The target sequence. Also with shape <code>(Batch, Channel, LengthY)</code>.
+    If not present, default to equal <code>x</code>.
+- <code>num_encoder: int</code>; Number of encoder layers. Set to 0 to disable encoder and use only decoder. Default 6.
+- <code>num_decoder: int</code>; Number of decoder layers. Set to 0 to disable decoder and use only encoder. Default 6.
+- <code>num_head: int</code>; Number of heads for multi-headed attention. Default 8.
+- <code>mask: None or dict</code>; Keys are among: <code>src_mask</code>, <code>tgt_mask,</code>memory_mask<code>,</code>src_key_padding_mask<code>,</code>tgt_key_padding_mask<code>,</code>memory_key_padding_mask<code>.
+    See the</code>forward<code>method of</code>torch.nn.Transformer<code>for details.
+-</code>causal: bool<code>; Default false. if true, will add causal masks to source and target, so that
+    current value only depends on the past, not the future, in the sequences.
+-</code>**kw: dict<code>; Any additional KWargs are passed down to</code>torch.nn.Transformer<code>, as well as</code>warm.engine.forward<code>.
+-</code>return: Tensor<code>; Same shape as</code>y<code>, if</code>num_decoder<code>&gt; 0. Otherwise same shape as</code>x`.</p>
                 
                   
                 
