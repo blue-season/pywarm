@@ -100,3 +100,19 @@ def test_dropout():
     torch.manual_seed(100)
     y1 = W.dropout(x, 0.3, by_channel=True, parent=m)
     assert torch.equal(y0, y1)
+
+
+def test_transformer():
+    m = nn.Module()
+    x = torch.randn(10, 2, 4)
+    y = torch.randn(6, 2, 4)
+    torch.manual_seed(100)
+    z0 = nn.Transformer(4, 2, 1, 1, dim_feedforward=8)(x, y)
+    torch.manual_seed(100)
+    z1 = W.transformer(x, y, 1, 1, 2, dim_feedforward=8, in_shape='DBC', out_shape='DBC', parent=m)
+    assert torch.equal(z0, z1)
+    torch.manual_seed(100)
+    z1 = W.transformer(x, y, 1, 1, 2, dim_feedforward=8, in_shape='DBC', out_shape='DBC', parent=m, causal=True)
+    assert not torch.equal(z0, z1)
+    z1 = W.transformer(x, None, 2, 0, 2, dim_feedforward=8, in_shape='DBC', out_shape='DBC', parent=m)
+    assert z1.shape == x.shape

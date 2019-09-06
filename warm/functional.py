@@ -2,7 +2,9 @@
 """
 Wraps around various torch.nn Modules to fit into a functional interface.
 """
+import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from warm import engine
 
 
@@ -200,10 +202,9 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
     def _causal_mask(n):
         mask = (torch.triu(torch.ones(n, n)) == 1).transpose(0, 1)
         return mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
-    base_shape = 'DBC'
     if y is None:
         y = x
-    y = permute(y, in_shape, base_shape)
+    y = permute(y, in_shape, 'DBC')
     mask = mask or {}
     if causal:
         i = in_shape.find('D')
@@ -211,20 +212,21 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
         mask['src_mask'] = mask.pop('src_mask', 0.0)+mx
         my = _causal_mask(y.shape[0])
         mask['tgt_mask'] = mask.pop('tgt_mask', 0.0)+my
-    encoder = W.identity if num_encoder == 0 else None
-    decoder = W.identity if num_decoder == 0 else None
+    encoder = identity if num_encoder == 0 else None
+    decoder = identity if num_decoder == 0 else None
     inferred_kw = dict(
         base_name='transformer',
         base_class=nn.Transformer,
-        base_shape=base_shape,
+        base_shape='DBC',
         base_kw=dict(
+            d_model=x.shape[in_shape.find('C')],
             custom_encoder=encoder,
             custom_decoder=decoder,
             nhead=num_head,
             num_encoder_layers=num_encoder,
-            num_decoder_layers=num_decoder, ),
+            num_decoder_layers=num_decoder, 
+            **engine.unused_kwargs(kw), ),
         in_shape=in_shape,
-        infer_kw={'d_model':'C'},
         forward_kw=mask,
         forward_arg=(y, ), )
     return engine.forward(x, **{**inferred_kw, **kw})
