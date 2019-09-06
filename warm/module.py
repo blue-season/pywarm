@@ -4,7 +4,7 @@ Custom modules to enhance the nn Sequential experience.
 
 PyWarm's core concept is to use a functional interface to simplify network building.
 However, if you still prefer the classical way of defining child modules in `__init__()`,
-Pywarm provides some utility modules to help organize child modules better.
+PyWarm provides some utilities to help organize child modules better.
 
 - `Lambda` can be used to wrap one line data transformations, like `x.view()`, `x.permute()` etc, into modules.
 

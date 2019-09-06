@@ -72,7 +72,7 @@ can replace them all.
 
 Many neural network layers result in a transformation of shapes, for example a convolution operation changes
 shape from `(Batch, ChannelIn, *)` to `(Batch, ChannelOut, *)`. PyTorch nn Modules require the users to keep track of
-both `in_channels` and `out_channels`. PyWarm relives this pain by inferring the `in_channels` for you, so you
+both `in_channels` and `out_channels`. PyWarm relieves this pain by inferring the `in_channels` for you, so you
 can focus more on the nature of the operation, rather than chores.
 
 ## Argument passdown
@@ -82,13 +82,30 @@ additional keyword arguments to the underlying nn Module. For example, if you wa
 just use `W.conv(..., stride=2)`. The only thing to remember is that you have to specify the full keyword, rather than
 relying on the position of arguments.
 
-## Optional activation keyword
+## Parameter initialization per usage
+
+Unlike PyTorch's approach, paramter initialization can be specified directly in PyWarm's functional interface.
+For example:
+
+```Python
+x = W.conv(x, 20, 1, init_weight='kaiming_uniform_')
+```
+This makes it easier to create layer specific initialization in PyWarm. You no long need to go through
+`self.modules()` and `self.parameters()` to create customized initializations.
+
+By default, PyWarm will look into `torch.nn.init` for initialization function names.
+Alternatively, you may just specify a callable, or a tuple `(fn, kwargs)` if the callable accepts more than 1 input.
+
+If the initialization is not specified or `None` is used, the corresponding layer will get default initializations as specified
+in `torch.nn` modules. 
+
+## Apply nonlinearity to the output
 
 PyWarm's functional interface support adding an optional keyword argument `activation=name`, where
 name is a callable or just its name, which represents an activation (nonlinearity) functions
 in `torch.nn.functional` or just `torch`. By default no activation is used.
 
-## Mix Match
+## Mix and Match
 
 You are not limited to just use PyWarm's functional interface. It is completely ok to mix and match the old
 PyTorch way of child module definitions with PyWarm's functions. For example:
