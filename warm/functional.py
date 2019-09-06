@@ -185,7 +185,7 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
         mask=None, causal=False, in_shape='BCD', **kw):
     """ Transformer layer.\n
     This layer covers functionality of `Transformer`, `TransformerEncoder`, and `TransformerDecoder`.
-    See `[torch.nn.Transformer](https://pytorch.org/docs/stable/nn.html#transformer)` for more details.\n
+    See [`torch.nn.Transformer`](https://pytorch.org/docs/stable/nn.html#transformer) for more details.\n
     - `x: Tensor`; The source sequence, with shape `(Batch, Channel, LengthX)`.
         `Channel` is usually from embedding.
     - `y: None or Tensor`; The target sequence. Also with shape `(Batch, Channel, LengthY)`.
@@ -193,7 +193,7 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
     - `num_encoder: int`; Number of encoder layers. Set to 0 to disable encoder and use only decoder. Default 6.
     - `num_decoder: int`; Number of decoder layers. Set to 0 to disable decoder and use only encoder. Default 6.
     - `num_head: int`; Number of heads for multi-headed attention. Default 8.
-    - `mask: None or dict`; Keys are among: `src_mask`, `tgt_mask, `memory_mask`,
+    - `mask: None or dict`; Keys are among: `src_mask`, `tgt_mask`, `memory_mask`,
         `src_key_padding_mask`, `tgt_key_padding_mask`, `memory_key_padding_mask`.
         See the `forward` method of `torch.nn.Transformer` for details.
     - `causal: bool`; Default false. if true, will add causal masks to source and target, so that
