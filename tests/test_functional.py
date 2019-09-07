@@ -125,7 +125,7 @@ def test_layer_norm():
     y1 = W.layer_norm(x, [2, -2, -1], parent=m)
     assert torch.equal(y0, y1)
     y0 = nn.LayerNorm(5)(x)
-    y1 = W.layer_norm(x, parent=m)
+    y1 = W.layer_norm(x, dim=-1, parent=m)
     assert torch.equal(y0, y1)
     x0 = x.permute(0, 4, 2, 1, 3)
     y0 = nn.LayerNorm([2, 4])(x0)

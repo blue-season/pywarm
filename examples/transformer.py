@@ -20,7 +20,7 @@ def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=0.0, **kw):
     def combine_heads(t): # (B, N, H, L) -> (B, C, L)
         return t.reshape(batch, -1, t.shape[-1]) # (B, C, L)
     if y is None:
-        y = x
+        y = x # self attention
     batch, size = x.shape[:2]
     assert size%num_head == 0, 'num_head must be a divisor of size.'
     assert y.shape[:2] == x.shape[:2], 'The first 2 dims of x, y must match.'
