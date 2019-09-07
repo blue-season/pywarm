@@ -132,3 +132,23 @@ def test_layer_norm():
     y0 = y0.permute(0, 3, 2, 4, 1)
     y1 = W.layer_norm(x, dim=[1, -2], parent=m)
     assert torch.equal(y0, y1)
+
+
+def test_embedding():
+    m = nn.Module()
+    x = torch.randint(0, 20, (1, 2, 3, 4, 5))
+    torch.manual_seed(10)
+    y0 = nn.Embedding(20, 8)(x)
+    torch.manual_seed(10)
+    y1 = W.embedding(x, 8, 20, parent=m)
+    assert torch.equal(y0, y1)
+    torch.manual_seed(10)
+    y1 = W.embedding(x, 8, 20, in_shape='DCB', parent=m) # shapes should have no effect
+    assert torch.equal(y0, y1)
+    torch.manual_seed(10)
+    y1 = W.embedding(x, 8, 20, out_shape='CBD', parent=m) # shapes should have no effect
+    assert torch.equal(y0, y1)
+    y1 = W.embedding(x, 8, parent=m) # should work without a explicit vocabulary size
+    torch.manual_seed(10)
+    y1 = W.embedding(x.double(), 8, parent=m) # should work with non integer tensors.
+    assert torch.equal(y0, y1)
