@@ -107,6 +107,9 @@ self.conv2 = nn.Conv2d(20, 50, 5, 1)
 
 -   One unified `W.conv` for all 1D, 2D, and 3D cases. Fewer things to keep track of!
 
+-   `activation='relu'`. All `warm.functional` APIs accept an optional `activation` keyword,
+    which is basically equivalent to `F.relu(W.conv(...))`.
+
 For deeper neural networks, see additional [examples](https://blue-season.github.io/pywarm/docs/example/).
 
 ----
@@ -187,3 +190,9 @@ Documentations are generated using the excellent [Portray](https://timothycrosle
 -   [Tutorial](https://blue-season.github.io/pywarm/docs/tutorial/) 
 
 -   [API reference](https://blue-season.github.io/pywarm/reference/warm/functional/)
+
+----
+## Keep in touch
+
+If you find PyWarm useful, you can leave a message in the [PyWarm's wiki homepage](https://github.com/blue-season/pywarm/wiki).
+Please also help us spread the word. Your feedback is very appreciated.

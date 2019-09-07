@@ -14,7 +14,7 @@ import warm.util
 import warm.functional as W
 
 
-def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=0.0, **kw):
+def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=None, **kw):
     def split_heads(t): # (B, C, L) -> (B, N, H, L) where N*H == C
         return t.reshape(batch, num_head, size//num_head, t.shape[-1])
     def combine_heads(t): # (B, N, H, L) -> (B, C, L)
@@ -32,7 +32,8 @@ def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=0.0, **kw):
     v = split_heads(v) # (B, N, H, Ly)
     q *= (size//num_head)**(-0.5)
     a = q.transpose(2, 3).contiguous().matmul(k) # attention weights, (B, N, Lx, Ly)
-    a += mask
+    if mask is not None:
+        a += mask
     a = F.softmax(a, dim=-1)
     a = W.dropout(a, dropout)
     x = v.matmul(a.transpose(2, 3).contiguous()) # (B, N, H, Lx)
@@ -60,11 +61,11 @@ def encoder(x, num_encoder=6, **kw):
     return W.layer_norm(x)
 
 
-def decoder(x, y, num_decoder=6, mask_x=0.0, mask_y=0.0, **kw):
+def decoder(x, y, num_decoder=6, mask_x=None, mask_y=None, **kw):
     for i in range(num_decoder):
         x = add_shortcut(x, multi_head_attention, mask=mask_x, **kw)
         x = add_shortcut(x, multi_head_attention, y=y, mask=mask_y, **kw)
-        x = add_shortcut(x, feed_forward)
+        x = add_shortcut(x, feed_forward, **kw)
     return W.layer_norm(x)
 
 
