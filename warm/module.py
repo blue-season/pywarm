@@ -51,7 +51,7 @@ class Lambda(nn.Module):
         self.arg = arg
         self.kw = kw
     def forward(self, x):
-        """ """
+        """ forward. """
         return self.fn(x, *self.arg, **self.kw)
 
 
@@ -59,7 +59,7 @@ class Sequential(nn.Sequential):
     """ Similar to `nn.Sequential`, except that child modules can have multiple outputs (e.g. `nn.RNN`).\n
     - `*arg: list of Modules`; Same as `nn.Sequential`. """
     def forward(self, x):
-        """ """
+        """ forward. """
         for module in self._modules.values():
             if isinstance(x, tuple):
                 try:
@@ -80,5 +80,5 @@ class Shortcut(Sequential):
         super().__init__(*arg)
         self.projection = projection or nn.Identity()
     def forward(self, x):
-        """ """
+        """ forward. """
         return super().forward(x)+self.projection(x)

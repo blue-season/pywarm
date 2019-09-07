@@ -37,7 +37,7 @@ def _auto_name(name, parent):
     return f'{name}_{track[name]}'
 
 
-def prepare_model_(model, data, device='cpu'):
+def prepare_model_(model, *data, device='cpu'):
     """ Initialize all childen modules defined by `warm` in a parent `model`.\n
     - `model: Module`; The parent model to be prepared.
     - `data: Tensor, or list of int`; A batch of data with the correct shape and type to be forwarded by model.
@@ -56,10 +56,10 @@ def prepare_model_(model, data, device='cpu'):
             return {_prep_data(v) for k, v in d.items()}
     with torch.no_grad():
         is_training = model.training
-        data = _prep_data(data)
+        data = [_prep_data(d) for d in data]
         model.eval()
         model.to(device)
-        model(data)
+        model(*data)
         model.train(is_training)
     return model
 

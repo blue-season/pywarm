@@ -234,10 +234,10 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
     return engine.forward(x, **{**inferred_kw, **kw})
 
 
-def layer_norm(x, dim=-1, **kw):
+def layer_norm(x, dim=1, **kw):
     """ Layer Normalization.\n
     - `x: Tensor`; Can be of any shape.
-    - `dim: int or list of int`; Dimensions to be normalized.
+    - `dim: int or list of int`; Dimensions to be normalized. Default: 1.
     - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LayerNorm`, as well as `warm.engine.forward`.
     - `return: Tensor`; Same shape as `x`. """
     if dim != -1:

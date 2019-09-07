@@ -23,7 +23,7 @@ def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=0.0, **kw):
         y = x
     batch, size = x.shape[:2]
     assert size%num_head == 0, 'num_head must be a divisor of size.'
-    assert y.shape[:2] == x.shape[:2], 'x, y must have matching first 2 dims.'
+    assert y.shape[:2] == x.shape[:2], 'The first 2 dims of x, y must match.'
     q = W.linear(x, size) # query
     k = W.linear(y, size) # key
     v = W.linear(y, size) # value
@@ -35,15 +35,15 @@ def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=0.0, **kw):
     a += mask
     a = F.softmax(a, dim=-1)
     a = W.dropout(a, dropout)
-    x = a.transpose(2, 3).contiguous().matmul(v) # (B, N, H, Lx)
+    x = v.matmul(a.transpose(2, 3).contiguous()) # (B, N, H, Lx)
     x = combine_heads(x) # (B, C, Lx)
-    return W.linear(x)
+    return W.linear(x, size)
 
 
 def feed_forward(x, size_ff=2048, dropout=0.1, **kw):
-    y = W.Linear(x, size_ff, activation='relu')
+    y = W.linear(x, size_ff, activation='relu')
     y = W.dropout(y, dropout)
-    return W.Linear(y, x.shape[1])
+    return W.linear(y, x.shape[1])
 
 
 def add_shortcut(x, layer, **kw):
@@ -53,17 +53,17 @@ def add_shortcut(x, layer, **kw):
     return x+y
 
 
-def encoder(x, num_stack=6, **kw):
-    for i in range(num_stack):
-        x = add_shortcut(x, multi_head_attention)
-        x = add_shortcut(x, feed_forward)
+def encoder(x, num_encoder=6, **kw):
+    for i in range(num_encoder):
+        x = add_shortcut(x, multi_head_attention, **kw)
+        x = add_shortcut(x, feed_forward, **kw)
     return W.layer_norm(x)
 
 
-def decoder(x, y, num_stack=6, mask_x=0.0, mask_y=0.0, **kw):
-    for i in range(num_stack):
-        x = add_shortcut(x, multi_head_attention, mask=mask_x)
-        x = add_shortcut(x, multi_head_attention, y=y, mask=mask_y)
+def decoder(x, y, num_decoder=6, mask_x=0.0, mask_y=0.0, **kw):
+    for i in range(num_decoder):
+        x = add_shortcut(x, multi_head_attention, mask=mask_x, **kw)
+        x = add_shortcut(x, multi_head_attention, y=y, mask=mask_y, **kw)
         x = add_shortcut(x, feed_forward)
     return W.layer_norm(x)
 
@@ -74,11 +74,10 @@ def transformer(x, y, **kw):
     return x
 
 
-def positional_encoding():
-    pass
-
-
-def causal_additive_mask():
-    pass
-
-
+class Transformer(nn.Module):
+    def __init__(self, *shape, **kw):
+        super().__init__()
+        self.kw = kw
+        warm.engine.prepare_model_(self, *shape)
+    def forward(self, x, y):
+        return transformer(x, y, **self.kw)
