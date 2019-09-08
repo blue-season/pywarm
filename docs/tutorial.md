@@ -1,5 +1,5 @@
 
-# PyWarm Tutorial
+# PyWarm Basic Tutorial
 
 ## Import
 
@@ -47,6 +47,8 @@ or just the shape, e.g. `[2, 1, 28, 28]` for the model inputs. If the model has 
 you may supple them in a list or a dictionary.
 
 **Note**: If the model contains `batch_norm` layers, you need to specify the `Batch` dimension to at least 2.
+
+# Advanced Topics
 
 ## Default shapes
 
