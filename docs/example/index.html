@@ -1101,7 +1101,7 @@
 <span class="sd">The Transformer instance accepts two inputs:</span>
 <span class="sd">x is Tensor with shape (Batch, Channel, LengthX).</span>
 <span class="sd">    usually a source sequence from embedding (in such cases,</span>
-<span class="sd">    Channel equals the embedding vocabulary size).</span>
+<span class="sd">    Channel equals the embedding size).</span>
 <span class="sd">y is Tensor with shape (Batch, Channel, lengthY).</span>
 <span class="sd">    usually a target sequence, also from embedding.</span>
 <span class="sd">**kw is passed down to inner components.</span>
@@ -1175,10 +1175,12 @@
 
 
 <span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">shape</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kw</span> <span class="o">=</span> <span class="n">kw</span>
         <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">shape</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">transformer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kw</span><span class="p">)</span>
 </pre></div>
