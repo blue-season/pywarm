@@ -124,20 +124,9 @@ def permute(x, in_shape='BCD', out_shape='BCD', **kw):
         return x.permute(*out_shape)
     if isinstance(in_shape, str) and isinstance(out_shape, str) :
         assert set(in_shape) == set(out_shape) <= {'B', 'C', 'D'}, 'In and out shapes must have save set of chars among B, C, and D.'
-        if x.ndim == 2:
-            in_shape = in_shape.replace('D', '')
-            out_shape = out_shape.replace('D', '')
-        if x.ndim <= 3:
-            return x.permute(*[in_shape.find(d) for d in out_shape])
-        dim = {'B':1, 'C':1, 'D':x.ndim-2}
-        dim = np.split(list(x.shape), np.cumsum([dim[d] for d in in_shape]))[:-1]
-        dim = {d:v for d, v in zip(in_shape, dim)}
-        dd = dim['D']
-        dim = {'B':int(dim['B']), 'C':int(dim['C']), 'D':-1}
-        x = torch.reshape(x, [dim[d] for d in in_shape]) # reshape to 3d
-        x = x.permute(*[in_shape.find(d) for d in out_shape]) # permute on 3d
-        dim['D'] = dd
-        x = torch.reshape(x, list(np.hstack([dim[d] for d in out_shape]))) # reshape back to nd
+        in_shape = in_shape.lower().replace('d', '...')
+        out_shape = out_shape.lower().replace('d', '...')
+        return torch.einsum(f'{in_shape}->{out_shape}', x)
     return x
 
 
