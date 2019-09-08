@@ -287,6 +287,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#keep-in-touch" class="md-nav__link">
+    Keep in touch
+  </a>
+  
+</li>
+      
       
       
       
@@ -497,6 +504,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#keep-in-touch" class="md-nav__link">
+    Keep in touch
+  </a>
+  
+</li>
+      
       
       
       
@@ -526,12 +540,13 @@
 <hr />
 <h2 id="introduction">Introduction</h2>
 <p>PyWarm is a lightweight, high-level neural network construction API for PyTorch.
-It only aims to simplify the network definition, and does not cover
-model training, validation or data handling.</p>
+It enables defining all parts of NNs in the functional way.</p>
 <p>With PyWarm, you can put <em>all</em> network data flow logic in the <code>forward()</code> method of
 your model, without the need to define children modules in the <code>__init__()</code> method
 and then call it again in the <code>forward()</code>.
 This result in a much more readable model definition in fewer lines of code.</p>
+<p>PyWarm only aims to simplify the network definition, and does not attempt to cover
+model training, validation or data handling.</p>
 <hr />
 <p>For example, a convnet for MNIST:
 (If needed, click the tabs to switch between Warm and Torch versions)</p>
@@ -660,7 +675,13 @@ This result in a much more readable model definition in fewer lines of code.</p>
 </pre></div>
 
 <ul>
-<li>One unified <code>W.conv</code> for all 1D, 2D, and 3D cases. Fewer things to keep track of!</li>
+<li>
+<p>One unified <code>W.conv</code> for all 1D, 2D, and 3D cases. Fewer things to keep track of!</p>
+</li>
+<li>
+<p><code>activation='relu'</code>. All <code>warm.functional</code> APIs accept an optional <code>activation</code> keyword,
+    which is basically equivalent to <code>F.relu(W.conv(...))</code>.</p>
+</li>
 </ul>
 <p>For deeper neural networks, see additional <a href="https://blue-season.github.io/pywarm/docs/example/">examples</a>.</p>
 <hr />
@@ -740,6 +761,10 @@ pytest -v
 <p><a href="https://blue-season.github.io/pywarm/reference/warm/functional/">API reference</a></p>
 </li>
 </ul>
+<hr />
+<h2 id="keep-in-touch">Keep in touch</h2>
+<p>If you find PyWarm useful, you can leave a message in the <a href="https://github.com/blue-season/pywarm/wiki">PyWarm's wiki homepage</a>.
+Your feedback is highly appreciated.</p>
                 
                   
                 

@@ -384,6 +384,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#embedding" class="md-nav__link">
+    embedding
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#gru" class="md-nav__link">
     gru
   </a>
@@ -393,6 +400,13 @@
           <li class="md-nav__item">
   <a href="#identity" class="md-nav__link">
     identity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer_norm" class="md-nav__link">
+    layer_norm
   </a>
   
 </li>
@@ -530,6 +544,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#embedding" class="md-nav__link">
+    embedding
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#gru" class="md-nav__link">
     gru
   </a>
@@ -539,6 +560,13 @@
           <li class="md-nav__item">
   <a href="#identity" class="md-nav__link">
     identity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer_norm" class="md-nav__link">
+    layer_norm
   </a>
   
 </li>
@@ -655,6 +683,29 @@ Dropout layer.</p>
 <li><code>return: Tensor</code>; Same shape as <code>x</code>.</li>
 </ul>
 <hr />
+<h3 id="embedding">embedding</h3>
+<p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
+    <span class="n">x</span><span class="p">,</span>
+  <span class="n">size</span><span class="p">,</span>
+  <span class="n">vocabulary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="o">**</span><span class="n">kw</span> 
+</pre></div>
+Embedding layer.</p>
+<p>The input is usually a list of indices (integers), and the output is a dense matrix which
+maps indices to dense vectors. Thus the output will have 1 more dimension than the input.</p>
+<p><strong>Note</strong>: The output of this function is always one more dimension than the input. For input with shape <code>(*)</code>,
+The output will be <code>(*, size)</code>. Any shape specifications in the KWargs are ignored. </p>
+<ul>
+<li><code>x: Tensor</code>; Contains indices into the vocabulary. Will be converted to <code>LongTensor</code> of integers.
+    Can be of any shape.</li>
+<li><code>size: int</code>; The size of embedding vector.</li>
+<li><code>vocabulary: int or None</code>; The size of vocabulary of embedding, or max number of unique indices in <code>x</code>.
+    By default it is set to <code>max(x)-min(x)+1</code>.</li>
+<li><code>**kw: dict</code>; Any additional KWargs are passed down to <code>torch.nn.LayerNorm</code>, as well as <code>warm.engine.forward</code>.</li>
+<li><code>return: Tensor</code>; With the embedded dim appended to the shape of x.
+    Thus with shape <code>(*, Size)</code>, where <code>*</code> is the shape of <code>x</code>.</li>
+</ul>
+<hr />
 <h3 id="gru">gru</h3>
 <p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
     <span class="o">*</span><span class="n">arg</span><span class="p">,</span>
@@ -694,6 +745,20 @@ Gated Recurrent Unit layer.</p>
   <span class="o">**</span><span class="n">kw</span> 
 </pre></div>
 Identity layer that returns the first input, ignores the rest arguments.</p>
+<hr />
+<h3 id="layer_norm">layer_norm</h3>
+<p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>
+    <span class="n">x</span><span class="p">,</span>
+  <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+  <span class="o">**</span><span class="n">kw</span> 
+</pre></div>
+Layer Normalization.</p>
+<ul>
+<li><code>x: Tensor</code>; Can be of any shape.</li>
+<li><code>dim: int or list of int</code>; Dimensions to be normalized. Default: 1.</li>
+<li><code>**kw: dict</code>; Any additional KWargs are passed down to <code>torch.nn.LayerNorm</code>, as well as <code>warm.engine.forward</code>.</li>
+<li><code>return: Tensor</code>; Same shape as <code>x</code>.</li>
+</ul>
 <hr />
 <h3 id="linear">linear</h3>
 <p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="err">:</span>

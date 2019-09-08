@@ -5,6 +5,7 @@ Wraps around various torch.nn Modules to fit into a functional interface.
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 from warm import engine
 
 
@@ -230,4 +231,62 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
         in_shape=in_shape,
         forward_kw=mask,
         forward_arg=(y, ), )
+    return engine.forward(x, **{**inferred_kw, **kw})
+
+
+def layer_norm(x, dim=1, **kw):
+    """ Layer Normalization.\n
+    - `x: Tensor`; Can be of any shape.
+    - `dim: int or list of int`; Dimensions to be normalized. Default: 1.
+    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LayerNorm`, as well as `warm.engine.forward`.
+    - `return: Tensor`; Same shape as `x`. """
+    if dim != -1:
+        if isinstance(dim, int):
+            dim = [dim]
+        dim_norm = [x.ndim+i if i < 0 else i for i in dim]
+        order = [i for i in range(x.ndim) if i not in dim_norm]+dim_norm
+        x = x.permute(order)
+        norm_shape = x.shape[-len(dim_norm):]
+    else:
+        norm_shape = [x.shape[-1]]
+    inferred_kw = dict(
+        base_name='layer_norm',
+        base_class=nn.LayerNorm,
+        base_kw={'normalized_shape':norm_shape}, )
+    x = engine.forward(x, **{**inferred_kw, **kw})
+    if dim != -1:
+        x = x.permute(np.argsort(order).tolist())
+    return x
+
+
+def embedding(x, size, vocabulary=None, **kw):
+    """ Embedding layer.\n
+    The input is usually a list of indices (integers), and the output is a dense matrix which
+    maps indices to dense vectors. Thus the output will have 1 more dimension than the input.\n
+    **Note**: The output of this function is always one more dimension than the input. For input with shape `(*)`,
+    The output will be `(*, size)`. Any shape specifications in the KWargs are ignored. \n
+    - `x: Tensor`; Contains indices into the vocabulary. Will be converted to `LongTensor` of integers.
+        Can be of any shape.
+    - `size: int`; The size of embedding vector.
+    - `vocabulary: int or None`; The size of vocabulary of embedding, or max number of unique indices in `x`.
+        By default it is set to `max(x)-min(x)+1`.
+    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LayerNorm`, as well as `warm.engine.forward`.
+    - `return: Tensor`; With the embedded dim appended to the shape of x.
+        Thus with shape `(*, Size)`, where `*` is the shape of `x`. """
+    x = x.type(torch.LongTensor)
+    if vocabulary is None:
+        vocabulary = x.max()-x.min()+1
+    kw.pop('in_shape', None)
+    kw.pop('out_shape', None)
+    kw.pop('base_shape', None)
+    inferred_kw = dict(
+        base_name='embedding',
+        base_class=nn.Embedding,
+        base_kw=dict(
+            num_embeddings=vocabulary,
+            embedding_dim=size,
+            **engine.unused_kwargs(kw), ),
+        base_shape=None,
+        in_shape=None,
+        out_shape=None, )
     return engine.forward(x, **{**inferred_kw, **kw})

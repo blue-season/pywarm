@@ -116,3 +116,39 @@ def test_transformer():
     assert not torch.equal(z0, z1)
     z1 = W.transformer(x, None, 2, 0, 2, dim_feedforward=8, in_shape='DBC', out_shape='DBC', parent=m)
     assert z1.shape == x.shape
+
+
+def test_layer_norm():
+    m = nn.Module()
+    x = torch.randn(1, 2, 3, 4, 5)
+    y0 = nn.LayerNorm([3, 4, 5])(x)
+    y1 = W.layer_norm(x, [2, -2, -1], parent=m)
+    assert torch.equal(y0, y1)
+    y0 = nn.LayerNorm(5)(x)
+    y1 = W.layer_norm(x, dim=-1, parent=m)
+    assert torch.equal(y0, y1)
+    x0 = x.permute(0, 4, 2, 1, 3)
+    y0 = nn.LayerNorm([2, 4])(x0)
+    y0 = y0.permute(0, 3, 2, 4, 1)
+    y1 = W.layer_norm(x, dim=[1, -2], parent=m)
+    assert torch.equal(y0, y1)
+
+
+def test_embedding():
+    m = nn.Module()
+    x = torch.randint(0, 20, (1, 2, 3, 4, 5))
+    torch.manual_seed(10)
+    y0 = nn.Embedding(20, 8)(x)
+    torch.manual_seed(10)
+    y1 = W.embedding(x, 8, 20, parent=m)
+    assert torch.equal(y0, y1)
+    torch.manual_seed(10)
+    y1 = W.embedding(x, 8, 20, in_shape='DCB', parent=m) # shapes should have no effect
+    assert torch.equal(y0, y1)
+    torch.manual_seed(10)
+    y1 = W.embedding(x, 8, 20, out_shape='CBD', parent=m) # shapes should have no effect
+    assert torch.equal(y0, y1)
+    y1 = W.embedding(x, 8, parent=m) # should work without a explicit vocabulary size
+    torch.manual_seed(10)
+    y1 = W.embedding(x.double(), 8, parent=m) # should work with non integer tensors.
+    assert torch.equal(y0, y1)
