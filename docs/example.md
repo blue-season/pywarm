@@ -314,3 +314,94 @@ class MobileNetV2(nn.Module):
 
 net = MobileNetV2()
 ```
+
+## Transformer
+
+```Python
+"""
+The Transformer model from paper Attention is all you need.
+The Transformer instance accepts two inputs:
+x is Tensor with shape (Batch, Channel, LengthX).
+    usually a source sequence from embedding (in such cases,
+    Channel equals the embedding vocabulary size).
+y is Tensor with shape (Batch, Channel, lengthY).
+    usually a target sequence, also from embedding.
+**kw is passed down to inner components.
+"""
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import warm
+import warm.functional as W
+
+
+def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=None, **kw):
+    def split_heads(t):
+        return t.reshape(batch, num_head, size//num_head, t.shape[-1])
+    def merge_heads(t):
+        return t.reshape(batch, -1, t.shape[-1])
+    if y is None:
+        y = x # self attention
+    batch, size = x.shape[:2]
+    assert size%num_head == 0, 'num_head must be a divisor of size.'
+    assert y.shape[:2] == x.shape[:2], 'The first 2 dims of x, y must match.'
+    q = W.linear(x, size) # query
+    k = W.linear(y, size) # key
+    v = W.linear(y, size) # value
+    q = split_heads(q)
+    k = split_heads(k)
+    v = split_heads(v)
+    q *= (size//num_head)**(-0.5)
+    a = q.transpose(2, 3).contiguous().matmul(k) # attention weights
+    if mask is not None:
+        a += mask
+    a = F.softmax(a, dim=-1)
+    a = W.dropout(a, dropout)
+    x = v.matmul(a.transpose(2, 3).contiguous())
+    x = merge_heads(x)
+    return W.linear(x, size)
+
+
+def feed_forward(x, size_ff=2048, dropout=0.1, **kw):
+    y = W.linear(x, size_ff, activation='relu')
+    y = W.dropout(y, dropout)
+    return W.linear(y, x.shape[1])
+
+
+def residual_add(x, layer, **kw):
+    y = W.layer_norm(x)
+    y = layer(y, **kw)
+    y = W.dropout(y)
+    return x+y
+
+
+def encoder(x, num_encoder=6, **kw):
+    for i in range(num_encoder):
+        x = residual(x, multi_head_attention, **kw)
+        x = residual(x, feed_forward, **kw)
+    return W.layer_norm(x)
+
+
+def decoder(x, y, num_decoder=6, mask_x=None, mask_y=None, **kw):
+    for i in range(num_decoder):
+        x = residual_add(x, multi_head_attention, mask=mask_x, **kw)
+        x = residual_add(x, multi_head_attention, y=y, mask=mask_y, **kw)
+        x = residual_add(x, feed_forward, **kw)
+    return W.layer_norm(x)
+
+
+def transformer(x, y, **kw):
+    x = encoder(x, **kw)
+    x = decoder(x, y, **kw)
+    return x
+
+
+class Transformer(nn.Module):
+    def __init__(self, *shape, **kw):
+        super().__init__()
+        self.kw = kw
+        warm.engine.prepare_model_(self, *shape)
+    def forward(self, x, y):
+        return transformer(x, y, **self.kw)
+
+```

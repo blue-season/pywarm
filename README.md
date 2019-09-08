@@ -16,13 +16,15 @@ A cleaner way to build neural networks for PyTorch.
 ## Introduction
 
 PyWarm is a lightweight, high-level neural network construction API for PyTorch.
-It only aims to simplify the network definition, and does not cover
-model training, validation or data handling.
+It enables defining all parts of NNs in the functional way.
 
 With PyWarm, you can put *all* network data flow logic in the `forward()` method of
 your model, without the need to define children modules in the `__init__()` method
 and then call it again in the `forward()`.
 This result in a much more readable model definition in fewer lines of code.
+
+PyWarm only aims to simplify the network definition, and does not attempt to cover
+model training, validation or data handling.
 
 ----
 
@@ -195,4 +197,4 @@ Documentations are generated using the excellent [Portray](https://timothycrosle
 ## Keep in touch
 
 If you find PyWarm useful, you can leave a message in the [PyWarm's wiki homepage](https://github.com/blue-season/pywarm/wiki).
-Please also help us spread the word. Your feedback is very appreciated.
+Your feedback is highly appreciated.

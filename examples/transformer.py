@@ -1,6 +1,6 @@
 # 09-05-2019;
 """
-Transformer from the paper *Attention is all you need*.
+The Transformer model from paper *Attention is all you need*.
 """
 from pathlib import Path
 import sys
@@ -17,11 +17,11 @@ import warm.functional as W
 def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=None, **kw):
     def split_heads(t): # (B, C, L) -> (B, N, H, L) where N*H == C
         return t.reshape(batch, num_head, size//num_head, t.shape[-1])
-    def combine_heads(t): # (B, N, H, L) -> (B, C, L)
+    def merge_heads(t): # (B, N, H, L) -> (B, C, L)
         return t.reshape(batch, -1, t.shape[-1]) # (B, C, L)
     if y is None:
         y = x # self attention
-    batch, size = x.shape[:2]
+    batch, size = x.shape[:2] # B, C, Lx
     assert size%num_head == 0, 'num_head must be a divisor of size.'
     assert y.shape[:2] == x.shape[:2], 'The first 2 dims of x, y must match.'
     q = W.linear(x, size) # query
@@ -37,7 +37,7 @@ def multi_head_attention(x, y=None, num_head=8, dropout=0.1, mask=None, **kw):
     a = F.softmax(a, dim=-1)
     a = W.dropout(a, dropout)
     x = v.matmul(a.transpose(2, 3).contiguous()) # (B, N, H, Lx)
-    x = combine_heads(x) # (B, C, Lx)
+    x = merge_heads(x) # (B, C, Lx)
     return W.linear(x, size)
 
 
@@ -47,7 +47,7 @@ def feed_forward(x, size_ff=2048, dropout=0.1, **kw):
     return W.linear(y, x.shape[1])
 
 
-def add_shortcut(x, layer, **kw):
+def residual_connection(x, layer, **kw):
     y = W.layer_norm(x)
     y = layer(y, **kw)
     y = W.dropout(y)
@@ -56,16 +56,16 @@ def add_shortcut(x, layer, **kw):
 
 def encoder(x, num_encoder=6, **kw):
     for i in range(num_encoder):
-        x = add_shortcut(x, multi_head_attention, **kw)
-        x = add_shortcut(x, feed_forward, **kw)
+        x = residual_connection(x, multi_head_attention, **kw)
+        x = residual_connection(x, feed_forward, **kw)
     return W.layer_norm(x)
 
 
 def decoder(x, y, num_decoder=6, mask_x=None, mask_y=None, **kw):
     for i in range(num_decoder):
-        x = add_shortcut(x, multi_head_attention, mask=mask_x, **kw)
-        x = add_shortcut(x, multi_head_attention, y=y, mask=mask_y, **kw)
-        x = add_shortcut(x, feed_forward, **kw)
+        x = residual_connection(x, multi_head_attention, mask=mask_x, **kw)
+        x = residual_connection(x, multi_head_attention, y=y, mask=mask_y, **kw)
+        x = residual_connection(x, feed_forward, **kw)
     return W.layer_norm(x)
 
 
