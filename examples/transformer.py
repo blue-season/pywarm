@@ -47,7 +47,7 @@ def feed_forward(x, size_ff=2048, dropout=0.1, **kw):
     return W.linear(y, x.shape[1])
 
 
-def residual_connection(x, layer, dropout=0.1, **kw):
+def residual_add(x, layer, dropout=0.1, **kw):
     y = W.layer_norm(x)
     y = layer(y, **kw)
     y = W.dropout(y, dropout)
@@ -56,16 +56,16 @@ def residual_connection(x, layer, dropout=0.1, **kw):
 
 def encoder(x, num_encoder=6, **kw):
     for i in range(num_encoder):
-        x = residual_connection(x, multi_head_attention, **kw)
-        x = residual_connection(x, feed_forward, **kw)
+        x = residual_add(x, multi_head_attention, **kw)
+        x = residual_add(x, feed_forward, **kw)
     return W.layer_norm(x)
 
 
 def decoder(x, y, num_decoder=6, mask_x=None, mask_y=None, **kw):
     for i in range(num_decoder):
-        x = residual_connection(x, multi_head_attention, mask=mask_x, **kw)
-        x = residual_connection(x, multi_head_attention, y=y, mask=mask_y, **kw)
-        x = residual_connection(x, feed_forward, **kw)
+        x = residual_add(x, multi_head_attention, mask=mask_x, **kw)
+        x = residual_add(x, multi_head_attention, y=y, mask=mask_y, **kw)
+        x = residual_add(x, feed_forward, **kw)
     return W.layer_norm(x)
 
 

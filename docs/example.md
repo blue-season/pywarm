@@ -377,8 +377,8 @@ def residual_add(x, layer, dropout=0.1, **kw):
 
 def encoder(x, num_encoder=6, **kw):
     for i in range(num_encoder):
-        x = residual(x, multi_head_attention, **kw)
-        x = residual(x, feed_forward, **kw)
+        x = residual_add(x, multi_head_attention, **kw)
+        x = residual_add(x, feed_forward, **kw)
     return W.layer_norm(x)
 
 
