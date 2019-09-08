@@ -193,8 +193,6 @@ Documentations are generated using the excellent [Portray](https://timothycrosle
 
 -   [API reference](https://blue-season.github.io/pywarm/reference/warm/functional/)
 
-----
-## Keep in touch
 
 If you find PyWarm useful, you can leave a message in the [PyWarm's wiki homepage](https://github.com/blue-season/pywarm/wiki).
 Your feedback is highly appreciated.
