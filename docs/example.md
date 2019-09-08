@@ -368,10 +368,10 @@ def feed_forward(x, size_ff=2048, dropout=0.1, **kw):
     return W.linear(y, x.shape[1])
 
 
-def residual_add(x, layer, **kw):
+def residual_add(x, layer, dropout=0.1, **kw):
     y = W.layer_norm(x)
     y = layer(y, **kw)
-    y = W.dropout(y)
+    y = W.dropout(y, dropout)
     return x+y
 
 
