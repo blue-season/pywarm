@@ -323,7 +323,7 @@ The Transformer model from paper Attention is all you need.
 The Transformer instance accepts two inputs:
 x is Tensor with shape (Batch, Channel, LengthX).
     usually a source sequence from embedding (in such cases,
-    Channel equals the embedding vocabulary size).
+    Channel equals the embedding size).
 y is Tensor with shape (Batch, Channel, lengthY).
     usually a target sequence, also from embedding.
 **kw is passed down to inner components.
@@ -397,10 +397,12 @@ def transformer(x, y, **kw):
 
 
 class Transformer(nn.Module):
+
     def __init__(self, *shape, **kw):
         super().__init__()
         self.kw = kw
         warm.engine.prepare_model_(self, *shape)
+        
     def forward(self, x, y):
         return transformer(x, y, **self.kw)
 
