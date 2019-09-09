@@ -63,10 +63,10 @@ def encoder(x, num_encoder=6, **kw):
 
 def decoder(x, y, num_decoder=6, mask_x=None, mask_y=None, **kw):
     for i in range(num_decoder):
-        x = residual_add(x, multi_head_attention, mask=mask_x, **kw)
-        x = residual_add(x, multi_head_attention, y=y, mask=mask_y, **kw)
-        x = residual_add(x, feed_forward, **kw)
-    return W.layer_norm(x)
+        y = residual_add(y, multi_head_attention, mask=mask_y, **kw)
+        y = residual_add(x, multi_head_attention, y=y, mask=mask_x, **kw)
+        y = residual_add(y, feed_forward, **kw)
+    return W.layer_norm(y)
 
 
 def transformer(x, y, **kw):
