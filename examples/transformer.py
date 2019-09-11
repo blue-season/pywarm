@@ -79,6 +79,6 @@ class Transformer(nn.Module):
     def __init__(self, *shape, **kw):
         super().__init__()
         self.kw = kw
-        warm.engine.prepare_model_(self, *shape)
+        warm.up(self, *shape)
     def forward(self, x, y):
         return transformer(x, y, **self.kw)

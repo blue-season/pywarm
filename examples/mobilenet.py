@@ -64,7 +64,7 @@ default_spec = (
 class WarmMobileNetV2(nn.Module):
     def __init__(self):
         super().__init__()
-        warm.engine.prepare_model_(self, [2, 3, 224, 224])
+        warm.up(self, [2, 3, 224, 224])
     def forward(self, x):
         count = 0
         for t, c, n, s, op in default_spec:

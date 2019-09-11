@@ -22,7 +22,7 @@ import warm.functional as W
 class WarmNet(nn.Module):
     def __init__(self):
         super().__init__()
-        warm.engine.prepare_model_(self, [1, 1, 28, 28])
+        warm.up(self, [1, 1, 28, 28])
     def forward(self, x):
         x = W.conv(x, 20, 5, activation='relu')
         x = F.max_pool2d(x, 2)

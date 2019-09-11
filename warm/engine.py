@@ -44,6 +44,7 @@ def prepare_model_(model, *data, device='cpu'):
         `data` can also be a list of `int`, in which case it is interpreted as the shape of the input data.
     - `device: str, or torch.device`; Should be the same for `model` and `data`. Default: `'cpu'`.
     - `return: Module`; The prepared model, with all children modules defined by `warm` initialized. """
+    _auto_name('', model)
     set_default_parent(model)
     def _prep_data(d):
         if isinstance(d, (np.ndarray, torch.Tensor)):
@@ -160,7 +161,8 @@ def forward(x, base_class,
         If `True`, the returned value of the function will be a tuple containing all outputs. Default: False.
     - `forward_arg: tuple`; positional args to be passed when calling the child module instance. Default: None.
     - `forward_kw: dict`; KWargs to be passed when calling the child module instance. Default: None.
-    - `initialization: str or callable or 2-tuple`; See the `spec` argument of `initialize_`. Default: None.
+    - `initialization: dict`; Keys are name of parameters to initialize. Values are init specs, which can be 
+        a, `str`, a `callable`, or `2-tuple`; See the `spec` argument of `initialize_` for details. Default: None.
     - `activation: str or callable or 2-tuple`; See the `spec` argument of `activate`. Default: None.
     - `return: Tensor or tuple`; If `tuple_out` is `True`, the returned value will be a `tuple`. """
     parent = parent or get_default_parent()

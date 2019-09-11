@@ -38,7 +38,7 @@ class ResNet(nn.Module):
         super().__init__()
         self.block = block
         self.stack_spec = stack_spec
-        warm.engine.prepare_model_(self, [2, 3, 32, 32])
+        warm.up(self, [2, 3, 32, 32])
 
     def forward(self, x):
         y = W.conv(x, 64, 7, stride=2, padding=3, bias=False)
@@ -150,7 +150,7 @@ resnet18 = ResNet()
 
 -   The PyWarm version significantly reduces self-repititions of code as in the vanilla PyTorch version.
 
--   Note that when warming the model via `warm.engine.prepare_model_(self, [2, 3, 32, 32])`
+-   Note that when warming the model via `warm.up(self, [2, 3, 32, 32])`
     We set the first `Batch` dimension to 2 because the model uses `batch_norm`,
     which will not work when `Batch` is 1.
 
@@ -215,7 +215,7 @@ class MobileNetV2(nn.Module):
 
     def __init__(self):
         super().__init__()
-        warm.engine.prepare_model_(self, [2, 3, 224, 224])
+        warm.up(self, [2, 3, 224, 224])
         
     def forward(self, x):
         for t, c, n, s, op in default_spec:
@@ -401,7 +401,7 @@ class Transformer(nn.Module):
     def __init__(self, *shape, **kw):
         super().__init__()
         self.kw = kw
-        warm.engine.prepare_model_(self, *shape)
+        warm.up(self, *shape)
         
     def forward(self, x, y):
         return transformer(x, y, **self.kw)

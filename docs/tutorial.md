@@ -34,13 +34,13 @@ You now use the warm functions:
 class MyWarmModule(nn.Module):
     def __init__(self):
         super().__init__()
-        warm.engine.prepare_model_(self, input_shape_or_data)
+        warm.up(self, input_shape_or_data)
     def forward(self, x):
         x = W.conv(x, out_channels, kernel_size) # no in_channels needed
         # more forward steps
 ```
 
-Notice the `warm.engine.prepare_model_(self, input_shape_or_data)` at the end of the `__init__()` method.
+Notice the `warm.up(self, input_shape_or_data)` at the end of the `__init__()` method.
 It is required so that PyWarm can infer all shapes of itermediate steps and set up trainable parameters.
 The only argument `input_shape_or_data` can either be a tensor, e.g. `torch.randn(2, 1, 28, 28)`,
 or just the shape, e.g. `[2, 1, 28, 28]` for the model inputs. If the model has multiple inputs,

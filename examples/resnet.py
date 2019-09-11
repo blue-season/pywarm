@@ -41,7 +41,7 @@ class WarmResNet(nn.Module):
         super().__init__()
         self.block = block
         self.stack_spec = stack_spec
-        warm.engine.prepare_model_(self, [2, 3, 32, 32])
+        warm.up(self, [2, 3, 32, 32])
     def forward(self, x):
         y = W.conv(x, 64, 7, stride=2, padding=3, bias=False, name='conv1')
         y = W.batch_norm(y, activation='relu', name='bn1')

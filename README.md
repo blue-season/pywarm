@@ -44,7 +44,7 @@ class ConvNet(nn.Module):
 
     def __init__(self):
         super().__init__()
-        warm.engine.prepare_model_(self, [2, 1, 28, 28])
+        warm.up(self, [2, 1, 28, 28])
 
     def forward(self, x):
         x = W.conv(x, 20, 5, activation='relu')
@@ -155,7 +155,7 @@ class MyModule(nn.Module):
 class MyWarmModule(nn.Module):
     def __init__(self):
         super().__init__()
-        warm.engine.prepare_model_(self, input_shape_or_data)
+        warm.up(self, input_shape_or_data)
     def forward(self, x):
         x = W.conv(x, out_channels, kernel_size) # no in_channels needed
         # more forward steps
@@ -163,7 +163,7 @@ class MyWarmModule(nn.Module):
 
 -   Finally, don't forget to warmify the model by adding
     
-    `warm.engine.prepare_model_(self, input_shape_or_data)`
+    `warm.up(self, input_shape_or_data)`
 
     at the end of the model's `__init__()` method. You need to supply
     `input_shape_or_data`, which is either a tensor of input data, 
@@ -192,7 +192,3 @@ Documentations are generated using the excellent [Portray](https://timothycrosle
 -   [Tutorial](https://blue-season.github.io/pywarm/docs/tutorial/) 
 
 -   [API reference](https://blue-season.github.io/pywarm/reference/warm/functional/)
-
-
-If you find PyWarm useful, you can leave a message in the [PyWarm's wiki homepage](https://github.com/blue-season/pywarm/wiki).
-Your feedback is highly appreciated.
