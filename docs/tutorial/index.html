@@ -511,6 +511,21 @@ It is required so that PyWarm can infer all shapes of itermediate steps and set 
 The only argument <code>input_shape_or_data</code> can either be a tensor, e.g. <code>torch.randn(2, 1, 28, 28)</code>,
 or just the shape, e.g. <code>[2, 1, 28, 28]</code> for the model inputs. If the model has multiple inputs,
 you may supple them in a list or a dictionary.</p>
+<p>Although it is recommended that you attach <code>warm.up()</code> to the end of the <code>__init__()</code> of your model, you can actually
+use it on the class instances like a normal function call:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyWarmModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span> <span class="c1"># no warm.up here</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># forward step, powered by PyWarm</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyWarmModule</span><span class="p">()</span> <span class="c1"># call warm.up outsize of module definition</span>
+
+<span class="n">warm</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
+</pre></div>
+
 <p><strong>Note</strong>: If the model contains <code>batch_norm</code> layers, you need to specify the <code>Batch</code> dimension to at least 2.</p>
 <h1 id="advanced-topics">Advanced Topics</h1>
 <h2 id="default-shapes">Default shapes</h2>
@@ -538,7 +553,7 @@ can focus more on the nature of the operation, rather than chores.</p>
 additional keyword arguments to the underlying nn Module. For example, if you want to specify strides to 2 for a conv layer,
 just use <code>W.conv(..., stride=2)</code>. The only thing to remember is that you have to specify the full keyword, rather than
 relying on the position of arguments.</p>
-<h2 id="parameter-initialization-per-usage">Parameter initialization per usage</h2>
+<h2 id="parameter-initialization-per-layer">Parameter initialization per layer</h2>
 <p>Unlike PyTorch's approach, paramter initialization can be specified directly in PyWarm's functional interface.
 For example:</p>
 <p><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">init_weight</span><span class="o">=</span><span class="s1">&#39;kaiming_uniform_&#39;</span><span class="p">)</span>
@@ -549,7 +564,7 @@ This makes it easier to create layer specific initialization in PyWarm. You no l
 Alternatively, you may just specify a callable, or a tuple <code>(fn, kwargs)</code> if the callable accepts more than 1 input.</p>
 <p>If the initialization is not specified or <code>None</code> is used, the corresponding layer will get default initializations as specified
 in <code>torch.nn</code> modules. </p>
-<h2 id="apply-nonlinearity-to-the-output">Apply nonlinearity to the output</h2>
+<h2 id="apply-activation-nonlinearity-to-the-output">Apply activation nonlinearity to the output</h2>
 <p>PyWarm's functional interface support adding an optional keyword argument <code>activation=name</code>, where
 name is a callable or just its name, which represents an activation (nonlinearity) functions
 in <code>torch.nn.functional</code> or just <code>torch</code>. By default no activation is used.</p>
@@ -566,6 +581,18 @@ PyTorch way of child module definitions with PyWarm's functions. For example:</p
         <span class="n">y</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)</span>
 </pre></div>
+
+<h2 id="custom-layer-names">Custom layer names</h2>
+<p>By default you do not have to specify layer names when defining using PyWarm functional API.
+PyWarm will track and count usage for the layer type and automatically assign names, for example
+<code>conv_1</code>, <code>conv_2</code>, ... etc. for subsequent convolutional layers (<code>W.conv</code>).</p>
+<p>Nevertheless, if you want to ensure certain layer have a specific name, you can specify <code>name='my_name'</code>
+keyword arguments in the call.</p>
+<p>Alternatively, if you still want PyWarm to count usage and increment ordinal for you, but customize
+just the base type name, you can use <code>base_name='my_prefix'</code> instead. The PyWarm modules will then have
+names like <code>my_prefix_1</code>, <code>my_prefix_2</code> in the children module list.</p>
+<p>See the PyWarm <a href="https://github.com/blue-season/pywarm/blob/master/examples/resnet.py">resnet example in the examples folder</a>
+on how to use these features to load pre-trained models into PyWarm models.</p>
                 
                   
                 
