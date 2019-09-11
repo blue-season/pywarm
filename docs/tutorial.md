@@ -46,6 +46,23 @@ The only argument `input_shape_or_data` can either be a tensor, e.g. `torch.rand
 or just the shape, e.g. `[2, 1, 28, 28]` for the model inputs. If the model has multiple inputs,
 you may supple them in a list or a dictionary.
 
+Although it is recommended that you attach `warm.up()` to the end of the `__init__()` of your model, you can actually
+use it on the class instances like a normal function call:
+
+```Python
+class MyWarmModule(nn.Module):
+    def __init__(self):
+        super().__init__() # no warm.up here
+    def forward(self, x):
+        x = W.conv(x, 10, 3)
+        # forward step, powered by PyWarm
+
+
+model = MyWarmModule() # call warm.up outsize of module definition
+
+warm.up(model, [2, 1, 28, 28])
+```
+
 **Note**: If the model contains `batch_norm` layers, you need to specify the `Batch` dimension to at least 2.
 
 # Advanced Topics
@@ -84,7 +101,7 @@ additional keyword arguments to the underlying nn Module. For example, if you wa
 just use `W.conv(..., stride=2)`. The only thing to remember is that you have to specify the full keyword, rather than
 relying on the position of arguments.
 
-## Parameter initialization per usage
+## Parameter initialization per layer
 
 Unlike PyTorch's approach, paramter initialization can be specified directly in PyWarm's functional interface.
 For example:
@@ -101,7 +118,7 @@ Alternatively, you may just specify a callable, or a tuple `(fn, kwargs)` if the
 If the initialization is not specified or `None` is used, the corresponding layer will get default initializations as specified
 in `torch.nn` modules. 
 
-## Apply nonlinearity to the output
+## Apply activation nonlinearity to the output
 
 PyWarm's functional interface support adding an optional keyword argument `activation=name`, where
 name is a callable or just its name, which represents an activation (nonlinearity) functions
@@ -123,3 +140,19 @@ class MyModel(nn.Module):
         y = F.relu(self.conv1(x))
         y = W.conv(y, 40, 3, activation='relu')
 ```
+
+## Custom layer names
+
+By default you do not have to specify layer names when defining using PyWarm functional API.
+PyWarm will track and count usage for the layer type and automatically assign names, for example
+`conv_1`, `conv_2`, ... etc. for subsequent convolutional layers (`W.conv`).
+
+Nevertheless, if you want to ensure certain layer have a specific name, you can specify `name='my_name'`
+keyword arguments in the call.
+
+Alternatively, if you still want PyWarm to count usage and increment ordinal for you, but customize
+just the base type name, you can use `base_name='my_prefix'` instead. The PyWarm modules will then have
+names like `my_prefix_1`, `my_prefix_2` in the children module list.
+
+See the PyWarm [resnet example in the examples folder](https://github.com/blue-season/pywarm/blob/master/examples/resnet.py)
+on how to use these features to load pre-trained models into PyWarm models.
