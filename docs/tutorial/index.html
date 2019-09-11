@@ -512,7 +512,7 @@ The only argument <code>input_shape_or_data</code> can either be a tensor, e.g. 
 or just the shape, e.g. <code>[2, 1, 28, 28]</code> for the model inputs. If the model has multiple inputs,
 you may supple them in a list or a dictionary.</p>
 <p>Although it is recommended that you attach <code>warm.up()</code> to the end of the <code>__init__()</code> of your model, you can actually
-use it on the class instances like a normal function call:</p>
+use it on the class instances outside of the definition, like a normal function call:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyWarmModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span> <span class="c1"># no warm.up here</span>
@@ -521,7 +521,7 @@ use it on the class instances like a normal function call:</p>
         <span class="c1"># forward step, powered by PyWarm</span>
 
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">MyWarmModule</span><span class="p">()</span> <span class="c1"># call warm.up outsize of module definition</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyWarmModule</span><span class="p">()</span> <span class="c1"># call warm.up outside of the module definition</span>
 
 <span class="n">warm</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
 </pre></div>
