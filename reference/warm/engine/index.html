@@ -660,7 +660,8 @@ A forward template that creates child instances at the first time it is called.<
     If <code>True</code>, the returned value of the function will be a tuple containing all outputs. Default: False.</li>
 <li><code>forward_arg: tuple</code>; positional args to be passed when calling the child module instance. Default: None.</li>
 <li><code>forward_kw: dict</code>; KWargs to be passed when calling the child module instance. Default: None.</li>
-<li><code>initialization: str or callable or 2-tuple</code>; See the <code>spec</code> argument of <code>initialize_</code>. Default: None.</li>
+<li><code>initialization: dict</code>; Keys are name of parameters to initialize. Values are init specs, which can be 
+    a, <code>str</code>, a <code>callable</code>, or <code>2-tuple</code>; See the <code>spec</code> argument of <code>initialize_</code> for details. Default: None.</li>
 <li><code>activation: str or callable or 2-tuple</code>; See the <code>spec</code> argument of <code>activate</code>. Default: None.</li>
 <li><code>return: Tensor or tuple</code>; If <code>tuple_out</code> is <code>True</code>, the returned value will be a <code>tuple</code>.</li>
 </ul>

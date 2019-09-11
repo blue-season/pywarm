@@ -500,13 +500,13 @@ For example, instead of:</p>
 <span class="k">class</span> <span class="nc">MyWarmModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape_or_data</span><span class="p">)</span>
+        <span class="n">warm</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape_or_data</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span> <span class="c1"># no in_channels needed</span>
         <span class="c1"># more forward steps</span>
 </pre></div>
 
-<p>Notice the <code>warm.engine.prepare_model_(self, input_shape_or_data)</code> at the end of the <code>__init__()</code> method.
+<p>Notice the <code>warm.up(self, input_shape_or_data)</code> at the end of the <code>__init__()</code> method.
 It is required so that PyWarm can infer all shapes of itermediate steps and set up trainable parameters.
 The only argument <code>input_shape_or_data</code> can either be a tensor, e.g. <code>torch.randn(2, 1, 28, 28)</code>,
 or just the shape, e.g. <code>[2, 1, 28, 28]</code> for the model inputs. If the model has multiple inputs,

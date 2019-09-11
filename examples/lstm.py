@@ -33,7 +33,7 @@ class WarmTagger(nn.Module):
     def __init__(self, embedding_dim, hidden_dim, vocab_size, tagset_size):
         super().__init__()
         self.arg = (embedding_dim, hidden_dim, vocab_size, tagset_size)
-        warm.engine.prepare_model_(self, torch.tensor([0, 1], dtype=torch.long))
+        warm.up(self, torch.tensor([0, 1], dtype=torch.long))
     def forward(self, x): # D
         embedding_dim, hidden_dim, vocab_size, tagset_size = self.arg
         y = W.embedding(x, embedding_dim, vocab_size) # D->DC

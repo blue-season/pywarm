@@ -571,7 +571,7 @@ model training, validation or data handling.</p>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
+        <span class="n">warm</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)</span>
@@ -709,7 +709,7 @@ model training, validation or data handling.</p>
 <span class="k">class</span> <span class="nc">MyWarmModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">warm</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">prepare_model_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape_or_data</span><span class="p">)</span>
+        <span class="n">warm</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape_or_data</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span> <span class="c1"># no in_channels needed</span>
         <span class="c1"># more forward steps</span>
@@ -718,7 +718,7 @@ model training, validation or data handling.</p>
 <ul>
 <li>
 <p>Finally, don't forget to warmify the model by adding</p>
-<p><code>warm.engine.prepare_model_(self, input_shape_or_data)</code></p>
+<p><code>warm.up(self, input_shape_or_data)</code></p>
 <p>at the end of the model's <code>__init__()</code> method. You need to supply
 <code>input_shape_or_data</code>, which is either a tensor of input data, 
 or just its shape, e.g. <code>[2, 1, 28, 28]</code> for MNIST inputs.</p>
@@ -747,8 +747,6 @@ pytest -v
 <p><a href="https://blue-season.github.io/pywarm/reference/warm/functional/">API reference</a></p>
 </li>
 </ul>
-<p>If you find PyWarm useful, you can leave a message in the <a href="https://github.com/blue-season/pywarm/wiki">PyWarm's wiki homepage</a>.
-Your feedback is highly appreciated.</p>
                 
                   
                 
