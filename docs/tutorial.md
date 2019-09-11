@@ -47,7 +47,7 @@ or just the shape, e.g. `[2, 1, 28, 28]` for the model inputs. If the model has 
 you may supple them in a list or a dictionary.
 
 Although it is recommended that you attach `warm.up()` to the end of the `__init__()` of your model, you can actually
-use it on the class instances like a normal function call:
+use it on the class instances outside of the definition, like a normal function call:
 
 ```Python
 class MyWarmModule(nn.Module):
@@ -58,7 +58,7 @@ class MyWarmModule(nn.Module):
         # forward step, powered by PyWarm
 
 
-model = MyWarmModule() # call warm.up outsize of module definition
+model = MyWarmModule() # call warm.up outside of the module definition
 
 warm.up(model, [2, 1, 28, 28])
 ```
@@ -155,4 +155,4 @@ just the base type name, you can use `base_name='my_prefix'` instead. The PyWarm
 names like `my_prefix_1`, `my_prefix_2` in the children module list.
 
 See the PyWarm [resnet example in the examples folder](https://github.com/blue-season/pywarm/blob/master/examples/resnet.py)
-on how to use these features to load pre-trained models into PyWarm models.
+on how to use these features to load pre-trained model parameters into PyWarm models.
