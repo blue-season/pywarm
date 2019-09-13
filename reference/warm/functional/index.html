@@ -713,7 +713,8 @@ The output will be <code>(*, size)</code>. Any shape specifications in the KWarg
 </pre></div>
 Gated Recurrent Unit layer.</p>
 <ul>
-<li><code>x: Tensor</code>; 3d, with shapes <code>(Batch, Channel, Length)</code>.</li>
+<li><code>x: Tensor or tuple</code>; If tuple, must be of format <code>(x, (h_0, c_0))</code>, where <code>x</code> is a 3d tensor,
+    with shapes <code>(Batch, Channel, Length)</code>.</li>
 <li><code>size: int</code>; Size of hidden features, and size of the output channel.</li>
 <li><code>init_weight_hh: None or str or callable</code>; Initialization specification for the hidden-hidden weight tensor.
     If a <code>str</code>, should be one of the nonlinearity functions contained in <code>torch.nn.init</code>.
@@ -798,7 +799,8 @@ Linear transformation layer.</p>
 </pre></div>
 Long Short Term Memory layer.</p>
 <ul>
-<li><code>x: Tensor</code>; 3d, with shapes <code>(Batch, Channel, Length)</code>.</li>
+<li><code>x: Tensor or tuple</code>; If tuple, must be of format <code>(x, (h_0, c_0))</code>, where <code>x</code> is a 3d tensor,
+    with shapes <code>(Batch, Channel, Length)</code>.</li>
 <li><code>size: int</code>; Size of hidden features, and size of the output channel.</li>
 <li><code>init_weight_hh: None or str or callable</code>; Initialization specification for the hidden-hidden weight tensor.
     If a <code>str</code>, should be one of the nonlinearity functions contained in <code>torch.nn.init</code>.
