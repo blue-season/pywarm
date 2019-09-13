@@ -89,7 +89,8 @@ def lstm(x, size,
         init_weight_hh='orthogonal_', init_weight_ih=None, init_bias_hh=None, init_bias_ih=None,
         bias=True, num_layers=1, **kw):
     """ Long Short Term Memory layer.\n
-    - `x: Tensor`; 3d, with shapes `(Batch, Channel, Length)`.
+    - `x: Tensor or tuple`; If tuple, must be of format `(x, (h_0, c_0))`, where `x` is a 3d tensor,
+        with shapes `(Batch, Channel, Length)`.
     - `size: int`; Size of hidden features, and size of the output channel.
     - `init_weight_hh: None or str or callable`; Initialization specification for the hidden-hidden weight tensor.
         If a `str`, should be one of the nonlinearity functions contained in `torch.nn.init`.
@@ -112,6 +113,9 @@ def lstm(x, size,
             where Directions = 2 if `bidirectional` else 1.
         `h_n` is the hidden states with shape `(num_layers*Directions, Batch, Size)`.
         `c_n` is the cell states with shape `(num_layers*Directions, Batch, Size)`. """
+    states = None
+    if isinstance(x, tuple):
+        x, *states = x
     init = dict(
         weight_hh=init_weight_hh,
         weight_ih=init_weight_ih,
@@ -126,6 +130,7 @@ def lstm(x, size,
             **engine.unused_kwargs(kw), },
         base_shape='DBC',
         infer_kw={'input_size':'C'},
+        forward_arg=states,
         initialization={
             f'{k}_l{l}':init[k] for k in ['weight_hh', 'weight_ih']+(['bias_hh', 'bias_ih'] if bias else [])
             for l in range(num_layers)}, )
@@ -134,7 +139,8 @@ def lstm(x, size,
 
 def gru(*arg, **kw):
     """ Gated Recurrent Unit layer.\n
-    - `x: Tensor`; 3d, with shapes `(Batch, Channel, Length)`.
+    - `x: Tensor or tuple`; If tuple, must be of format `(x, (h_0, c_0))`, where `x` is a 3d tensor,
+        with shapes `(Batch, Channel, Length)`.
     - `size: int`; Size of hidden features, and size of the output channel.
     - `init_weight_hh: None or str or callable`; Initialization specification for the hidden-hidden weight tensor.
         If a `str`, should be one of the nonlinearity functions contained in `torch.nn.init`.

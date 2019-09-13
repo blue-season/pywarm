@@ -70,6 +70,10 @@ def test_lstm():
     torch.manual_seed(100)
     y1 = W.lstm(x, 2, num_layers=2, parent=m, init_weight_hh=None, in_shape='DBC', out_shape='DBC')
     assert torch.equal(y0, y1)
+    y1, s1 = W.lstm(x, 2, parent=m, tuple_out=True) # test tuple out
+    assert len(s1) == 2
+    y2 = W.lstm((y1, s1), 2, parent=m) # test tuple in
+    assert torch.is_tensor(y2)
 
 
 def test_gru():
