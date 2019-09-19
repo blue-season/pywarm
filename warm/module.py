@@ -42,9 +42,9 @@ import torch.nn as nn
 
 class Lambda(nn.Module):
     """ Wraps a callable and all its call arguments.\n
-    - `fn: callable`; The callable being wrapped.
-    - `*arg: list`; Arguments to be passed to `fn`.
-    - `**kw: dict`; KWargs to be passed to `fn`. """
+    -  `fn: callable`; The callable being wrapped.
+    -  `*arg: list`; Arguments to be passed to `fn`.
+    -  `**kw: dict`; KWargs to be passed to `fn`. """
     def __init__(self, fn, *arg, **kw):
         super().__init__()
         self.fn = fn
@@ -57,7 +57,7 @@ class Lambda(nn.Module):
 
 class Sequential(nn.Sequential):
     """ Similar to `nn.Sequential`, except that child modules can have multiple outputs (e.g. `nn.RNN`).\n
-    - `*arg: list of Modules`; Same as `nn.Sequential`. """
+    -  `*arg: list of Modules`; Same as `nn.Sequential`. """
     def forward(self, x):
         """ forward. """
         for module in self._modules.values():
@@ -73,8 +73,8 @@ class Sequential(nn.Sequential):
 
 class Shortcut(Sequential):
     """ Similar to `nn.Sequential`, except that it performs a shortcut addition for the input and output.\n
-    - `*arg: list of Modules`; Same as `nn.Sequential`.
-    - `projection: None or callable`; If `None`, input with be added directly to the output.
+    -  `*arg: list of Modules`; Same as `nn.Sequential`.
+    -  `projection: None or callable`; If `None`, input with be added directly to the output.
         otherwise input will be passed to the `projection` first, usually to make the shapes match. """
     def __init__(self, *arg, projection=None):
         super().__init__(*arg)
