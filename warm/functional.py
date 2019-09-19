@@ -14,23 +14,23 @@ permute = engine.permute
 
 def conv(x, size, kernel, init_weight=None, init_bias=None, bias=True, **kw):
     """ Convolution layer.\n
-    - `x: Tensor`; With shape `(Batch, Channel, *)` where `*` Can be 1d or 2d or 3d.
+    -  `x: Tensor`; With shape `(Batch, Channel, *)` where `*` Can be 1d or 2d or 3d.
         If 3d, shapes are `(Batch, Channel, Length)`.
         If 4d, shapes are `(Batch, Channel, Height, Width)`.
         If 5d, shapes are `(Batch, Channel, Depth, Height, Width)`.
-    - `size: int`; Size of hidden filters, and size of the output channel.
-    - `kernel: int or tuple`; Size of the convolution kernel.
-    - `init_weight: None or str or callable`; Initialization specification for the weight tensor.
+    -  `size: int`; Size of hidden filters, and size of the output channel.
+    -  `kernel: int or tuple`; Size of the convolution kernel.
+    -  `init_weight: None or str or callable`; Initialization specification for the weight tensor.
         If a `str`, should be one of the nonlinearity functions contained in `torch.nn.init`.
         If a `callable`, it will be applied to `x` directly, i.e. `spec(x)`. If a 2-`tuple`,
         it must be of format `(callable, kwargs)`, i.e. `callable(x, **kwargs)`.
         Default: `None`, and the weight tensor is initialized using `torch.nn.ConvNd`s default scheme.
-    - `init_bias: None or str or callable`; Same as `init_weight`, but for the bias tensor.
-    - `bias: bool`; If `True`, adds a learnable bias to the output. Default: `True`.
-    - `**kw:dict`; Any additional KWargs are passed down to `torch.nn.ConvNd`, where N can be 1, 2 or 3.
+    -  `init_bias: None or str or callable`; Same as `init_weight`, but for the bias tensor.
+    -  `bias: bool`; If `True`, adds a learnable bias to the output. Default: `True`.
+    -  `**kw:dict`; Any additional KWargs are passed down to `torch.nn.ConvNd`, where N can be 1, 2 or 3.
         as well as `warm.engine.forward`. Refer to their docs for details. Some of the additional ConvNd arguments:
         `stride, padding, dilation, groups`.
-    - `return: Tensor`; With shape `(Batch, Size, *)` where `*` can be 1d, 2d, 3d that depends on `x`. """
+    -  `return: Tensor`; With shape `(Batch, Size, *)` where `*` can be 1d, 2d, 3d that depends on `x`. """
     d = x.ndim-3
     assert d in [0, 1, 2], 'Incompatible number of dims for input x.'
     inferred_kw = dict(
@@ -48,17 +48,17 @@ def conv(x, size, kernel, init_weight=None, init_bias=None, bias=True, **kw):
 
 def linear(x, size, init_weight=None, init_bias=None, bias=True, **kw):
     """ Linear transformation layer.\n
-    - `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where `*` means any number of additional dimensions.
-    - `size: int`; Size of hidden features, and size of the output channel.
-    - `init_weight: None or str or callable`; Initialization specification for the weight tensor.
+    -  `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where `*` means any number of additional dimensions.
+    -  `size: int`; Size of hidden features, and size of the output channel.
+    -  `init_weight: None or str or callable`; Initialization specification for the weight tensor.
         If a `str`, should be one of the nonlinearity functions contained in `torch.nn.init`.
         If a `callable`, it will be applied to `x` directly, i.e. `spec(x)`. If a 2-`tuple`,
         it must be of format `(callable, kwargs)`, i.e. `callable(x, **kwargs)`.
         Default: `None`, and the weight tensor is initialized using `torch.nn.Linear`s default scheme.
-    - `init_bias: None or str or callable`; Same as `init_weight`, but for the bias tensor.
-    - `bias: bool`; If `True`, adds a learnable bias to the output. Default: `True`.
-    - `**kw:dict`; Any additional KWargs are passed down to `warm.engine.forward`. Refer to its docs for details.
-    - `return: Tensor`; With shape `(Batch, Size, *)` where `*` can be 1d, 2d, 3d that depends on `x`. """
+    -  `init_bias: None or str or callable`; Same as `init_weight`, but for the bias tensor.
+    -  `bias: bool`; If `True`, adds a learnable bias to the output. Default: `True`.
+    -  `**kw:dict`; Any additional KWargs are passed down to `warm.engine.forward`. Refer to its docs for details.
+    -  `return: Tensor`; With shape `(Batch, Size, *)` where `*` can be 1d, 2d, 3d that depends on `x`. """
     inferred_kw = dict(
         base_name='linear',
         base_class=nn.Linear,
@@ -71,11 +71,11 @@ def linear(x, size, init_weight=None, init_bias=None, bias=True, **kw):
 
 def batch_norm(x, **kw):
     """ Batch Normalization layer.\n
-    - `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where `*` means any number of additional dimensions.
-    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.BatchNormNd`, where N can be 1, 2 or 3.
+    -  `x: Tensor`; 2d or more, with shapes `(Batch, Channel, *)` where `*` means any number of additional dimensions.
+    -  `**kw: dict`; Any additional KWargs are passed down to `torch.nn.BatchNormNd`, where N can be 1, 2 or 3.
         as well as `warm.engine.forward`. Refer to their docs for details. Some of the additional BatchNorm arguments:
         `eps, momentum, affine, track_running_stats`.
-    - `return: Tensor`; Same shape as input  `x`. """
+    -  `return: Tensor`; Same shape as input  `x`. """
     d = x.ndim-3
     assert d in [0, 1, 2], 'Incompatible number of dims for input x.'
     inferred_kw = dict(
@@ -89,26 +89,26 @@ def lstm(x, size,
         init_weight_hh='orthogonal_', init_weight_ih=None, init_bias_hh=None, init_bias_ih=None,
         bias=True, num_layers=1, **kw):
     """ Long Short Term Memory layer.\n
-    - `x: Tensor or tuple`; If tuple, must be of format `(x, (h_0, c_0))`, where `x` is a 3d tensor,
+    -  `x: Tensor or tuple`; If tuple, must be of format `(x, (h_0, c_0))`, where `x` is a 3d tensor,
         with shapes `(Batch, Channel, Length)`.
-    - `size: int`; Size of hidden features, and size of the output channel.
-    - `init_weight_hh: None or str or callable`; Initialization specification for the hidden-hidden weight tensor.
+    -  `size: int`; Size of hidden features, and size of the output channel.
+    -  `init_weight_hh: None or str or callable`; Initialization specification for the hidden-hidden weight tensor.
         If a `str`, should be one of the nonlinearity functions contained in `torch.nn.init`.
         If a `callable`, it will be applied to `x` directly, i.e. `spec(x)`. If a 2-`tuple`,
         it must be of format `(callable, kwargs)`, i.e. `callable(x, **kwargs)`.
         Default: `'orthogonal_'`.
-    - `init_weight_ih: None or str or callable`; Initialization specification for the input-hidden weight tensor.
+    -  `init_weight_ih: None or str or callable`; Initialization specification for the input-hidden weight tensor.
         Default: `None`, and the weight tensor is initialized using `torch.nn.LSTM`s default scheme.
-    - `init_bias_hh: None or str or callable`; Initialization specification for the hidden-hidden bias tensor.
+    -  `init_bias_hh: None or str or callable`; Initialization specification for the hidden-hidden bias tensor.
         Default: `None`, and the weight tensor is initialized using `torch.nn.LSTM`s default scheme.
-    - `init_bias_ih: None or str or callable`; Initialization specification for the input-hidden bias tensor.
+    -  `init_bias_ih: None or str or callable`; Initialization specification for the input-hidden bias tensor.
         Default: `None`, and the weight tensor is initialized using `torch.nn.LSTM`s default scheme.
-    - `bias: bool`; If `False`, then the layer does not use `bias_ih` and `bias_hh`. Default: `True`.
-    - `num_layers: int`; Number of the recurrent layers. Default: 1.
-    - `tuple_out: bool`; If `True`, the returned value will be a tuple `(out, (h_n, c_n))`. Default: False.
-    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LSTM`, as well as `warm.engine.forward`.
+    -  `bias: bool`; If `False`, then the layer does not use `bias_ih` and `bias_hh`. Default: `True`.
+    -  `num_layers: int`; Number of the recurrent layers. Default: 1.
+    -  `tuple_out: bool`; If `True`, the returned value will be a tuple `(out, (h_n, c_n))`. Default: False.
+    -  `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LSTM`, as well as `warm.engine.forward`.
         Refer to their docs for details. Some of the additional LSTM arguments: `dropout, bidirectional, batch_first`.
-    - `return: Tensor or tuple`; If `tuple_out` set to true, will return `(out, (h_n, c_n)`, otherwise just `out`.
+    -  `return: Tensor or tuple`; If `tuple_out` set to true, will return `(out, (h_n, c_n)`, otherwise just `out`.
         `out` has shape `(Batch, Size, Length*Directions)`,
             where Directions = 2 if `bidirectional` else 1.
         `h_n` is the hidden states with shape `(num_layers*Directions, Batch, Size)`.
@@ -139,26 +139,26 @@ def lstm(x, size,
 
 def gru(*arg, **kw):
     """ Gated Recurrent Unit layer.\n
-    - `x: Tensor or tuple`; If tuple, must be of format `(x, (h_0, c_0))`, where `x` is a 3d tensor,
+    -  `x: Tensor or tuple`; If tuple, must be of format `(x, (h_0, c_0))`, where `x` is a 3d tensor,
         with shapes `(Batch, Channel, Length)`.
-    - `size: int`; Size of hidden features, and size of the output channel.
-    - `init_weight_hh: None or str or callable`; Initialization specification for the hidden-hidden weight tensor.
+    -  `size: int`; Size of hidden features, and size of the output channel.
+    -  `init_weight_hh: None or str or callable`; Initialization specification for the hidden-hidden weight tensor.
         If a `str`, should be one of the nonlinearity functions contained in `torch.nn.init`.
         If a `callable`, it will be applied to `x` directly, i.e. `spec(x)`. If a 2-`tuple`,
         it must be of format `(callable, kwargs)`, i.e. `callable(x, **kwargs)`.
         Default: `'orthogonal_'`.
-    - `init_weight_ih: None or str or callable`; Initialization specification for the input-hidden weight tensor.
+    -  `init_weight_ih: None or str or callable`; Initialization specification for the input-hidden weight tensor.
         Default: `None`, and the weight tensor is initialized using `torch.nn.GRU`s default scheme.
-    - `init_bias_hh: None or str or callable`; Initialization specification for the hidden-hidden bias tensor.
+    -  `init_bias_hh: None or str or callable`; Initialization specification for the hidden-hidden bias tensor.
         Default: `None`, and the weight tensor is initialized using `torch.nn.GRU`s default scheme.
-    - `init_bias_ih: None or str or callable`; Initialization specification for the input-hidden bias tensor.
+    -  `init_bias_ih: None or str or callable`; Initialization specification for the input-hidden bias tensor.
         Default: `None`, and the weight tensor is initialized using `torch.nn.GRU`s default scheme.
-    - `bias: bool`; If `False`, then the layer does not use `bias_ih` and `bias_hh`. Default: `True`.
-    - `num_layers: int`; Number of the recurrent layers. Default: 1.
-    - `tuple_out: bool`; If `True`, the returned value will be a tuple `(out, (h_n, c_n))`. Default: False.
-    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.GRU`, as well as `warm.engine.forward`.
+    -  `bias: bool`; If `False`, then the layer does not use `bias_ih` and `bias_hh`. Default: `True`.
+    -  `num_layers: int`; Number of the recurrent layers. Default: 1.
+    -  `tuple_out: bool`; If `True`, the returned value will be a tuple `(out, (h_n, c_n))`. Default: False.
+    -  `**kw: dict`; Any additional KWargs are passed down to `torch.nn.GRU`, as well as `warm.engine.forward`.
         Refer to their docs for details. Some of the additional GRU arguments: `dropout, bidirectional, batch_first`.
-    - `return: Tensor or tuple`; If `tuple_out` set to true, will return `(out, (h_n, c_n)`, otherwise just `out`.
+    -  `return: Tensor or tuple`; If `tuple_out` set to true, will return `(out, (h_n, c_n)`, otherwise just `out`.
         `out` has shape `(Batch, Size, Length*Directions)`,
             where Directions = 2 if `bidirectional` else 1.
         `h_n` is the hidden states with shape `(num_layers*Directions, Batch, Size)`.
@@ -174,12 +174,12 @@ def identity(x, *arg, **kw):
 def dropout(x, rate=0.5, by_channel=False, **kw):
     """ Dropout layer.\n
     During training, randomly zeros part of input tensor `x`, at probability `rate`.\n
-    - `x: Tensor`; Can be of any shape if `by_channel` is false, or 2d and up if `by_channel` is true.
-    - `rate: float`; The probability of dropout. Default 0.5.
-    - `by_channel: bool`; If true, will dropout entire channels (all `'D'` dimensions will be 0 if x is `'BCD'`).
+    -  `x: Tensor`; Can be of any shape if `by_channel` is false, or 2d and up if `by_channel` is true.
+    -  `rate: float`; The probability of dropout. Default 0.5.
+    -  `by_channel: bool`; If true, will dropout entire channels (all `'D'` dimensions will be 0 if x is `'BCD'`).
         `by_channel` true requires `x` to be 2d or more.
-    - `inplace: bool`; If true, the operation will be in-place and the input `x` will be altered.
-    - `return: Tensor`; Same shape as `x`. """
+    -  `inplace: bool`; If true, the operation will be in-place and the input `x` will be altered.
+    -  `return: Tensor`; Same shape as `x`. """
     inferred_kw = dict(
         base_name='dropout',
         base_class=[nn.Dropout, nn.Dropout2d][by_channel],
@@ -193,20 +193,20 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
     """ Transformer layer.\n
     This layer covers functionality of `Transformer`, `TransformerEncoder`, and `TransformerDecoder`.
     See [`torch.nn.Transformer`](https://pytorch.org/docs/stable/nn.html#transformer) for more details.\n
-    - `x: Tensor`; The source sequence, with shape `(Batch, Channel, LengthX)`.
+    -  `x: Tensor`; The source sequence, with shape `(Batch, Channel, LengthX)`.
         `Channel` is usually from embedding.
-    - `y: None or Tensor`; The target sequence. Also with shape `(Batch, Channel, LengthY)`.
+    -  `y: None or Tensor`; The target sequence. Also with shape `(Batch, Channel, LengthY)`.
         If not present, default to equal `x`.
-    - `num_encoder: int`; Number of encoder layers. Set to 0 to disable encoder and use only decoder. Default 6.
-    - `num_decoder: int`; Number of decoder layers. Set to 0 to disable decoder and use only encoder. Default 6.
-    - `num_head: int`; Number of heads for multi-headed attention. Default 8.
-    - `mask: None or dict`; Keys are among: `src_mask`, `tgt_mask`, `memory_mask`,
+    -  `num_encoder: int`; Number of encoder layers. Set to 0 to disable encoder and use only decoder. Default 6.
+    -  `num_decoder: int`; Number of decoder layers. Set to 0 to disable decoder and use only encoder. Default 6.
+    -  `num_head: int`; Number of heads for multi-headed attention. Default 8.
+    -  `mask: None or dict`; Keys are among: `src_mask`, `tgt_mask`, `memory_mask`,
         `src_key_padding_mask`, `tgt_key_padding_mask`, `memory_key_padding_mask`.
         See the `forward` method of `torch.nn.Transformer` for details.
-    - `causal: bool`; Default false. if true, will add causal masks to source and target, so that
+    -  `causal: bool`; Default false. if true, will add causal masks to source and target, so that
         current value only depends on the past, not the future, in the sequences.
-    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.Transformer`, as well as `warm.engine.forward`.
-    - `return: Tensor`; Same shape as `y`, if `num_decoder` > 0. Otherwise same shape as `x`. """
+    -  `**kw: dict`; Any additional KWargs are passed down to `torch.nn.Transformer`, as well as `warm.engine.forward`.
+    -  `return: Tensor`; Same shape as `y`, if `num_decoder` > 0. Otherwise same shape as `x`. """
     def _causal_mask(n):
         mask = (torch.triu(torch.ones(n, n)) == 1).transpose(0, 1)
         return mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
@@ -242,10 +242,10 @@ def transformer(x, y=None, num_encoder=6, num_decoder=6, num_head=8,
 
 def layer_norm(x, dim=1, **kw):
     """ Layer Normalization.\n
-    - `x: Tensor`; Can be of any shape.
-    - `dim: int or list of int`; Dimensions to be normalized. Default: 1.
-    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LayerNorm`, as well as `warm.engine.forward`.
-    - `return: Tensor`; Same shape as `x`. """
+    -  `x: Tensor`; Can be of any shape.
+    -  `dim: int or list of int`; Dimensions to be normalized. Default: 1.
+    -  `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LayerNorm`, as well as `warm.engine.forward`.
+    -  `return: Tensor`; Same shape as `x`. """
     if dim != -1:
         if isinstance(dim, int):
             dim = [dim]
@@ -271,13 +271,13 @@ def embedding(x, size, vocabulary=None, **kw):
     maps indices to dense vectors. Thus the output will have 1 more dimension than the input.\n
     **Note**: The output of this function is always one more dimension than the input. For input with shape `(*)`,
     The output will be `(*, size)`. Any shape specifications in the KWargs are ignored. \n
-    - `x: Tensor`; Contains indices into the vocabulary. Will be converted to `LongTensor` of integers.
+    -  `x: Tensor`; Contains indices into the vocabulary. Will be converted to `LongTensor` of integers.
         Can be of any shape.
-    - `size: int`; The size of embedding vector.
-    - `vocabulary: int or None`; The size of vocabulary of embedding, or max number of unique indices in `x`.
+    -  `size: int`; The size of embedding vector.
+    -  `vocabulary: int or None`; The size of vocabulary of embedding, or max number of unique indices in `x`.
         By default it is set to `max(x)-min(x)+1`.
-    - `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LayerNorm`, as well as `warm.engine.forward`.
-    - `return: Tensor`; With the embedded dim appended to the shape of x.
+    -  `**kw: dict`; Any additional KWargs are passed down to `torch.nn.LayerNorm`, as well as `warm.engine.forward`.
+    -  `return: Tensor`; With the embedded dim appended to the shape of x.
         Thus with shape `(*, Size)`, where `*` is the shape of `x`. """
     x = x.type(torch.LongTensor)
     if vocabulary is None:
