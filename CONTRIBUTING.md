@@ -12,5 +12,4 @@ PyWarm is developed with Python 3.7, but has been tested to work with Python 3.6
 
 For the rational behind the distinct coding style use in PyWarm, please check
 
-https://blue-season.github.io/a-coding-style-for-python/.
-
+[A Coding Style for Python](https://blue-season.github.io/a-coding-style-for-python/).
