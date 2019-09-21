@@ -15,7 +15,7 @@ def camel_to_snake(name):
 
 
 def summary_str(model):
-    """ Get a string representation of model buiding blocks and parameter counts. """
+    """ Get a string representation of model building blocks and parameter counts. """
     indent_list, name_list, count_list = [], [], []
     def module_info(m, name, indent_level):
         count_list.append(sum([np.prod(list(p.size())) for p in m.parameters()]))
@@ -40,5 +40,5 @@ def summary_str(model):
 
 
 def summary(model):
-    """ Print a summary about model buiding blocks and parameter counts. """
+    """ Print a summary about model building blocks and parameter counts. """
     print(summary_str(model))
