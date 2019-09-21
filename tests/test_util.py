@@ -21,6 +21,13 @@ def test_camel_to_snake():
     assert util.camel_to_snake('_CamelAndSnake') == '__camel_and_snake'
 
 
+def test_summary_str():
+    from examples.resnet import WarmResNet
+    m = WarmResNet()
+    s = util.summary_str(m)
+    assert len(s) > 0
+
+
 def test_summary():
     from examples.resnet import WarmResNet
     m = WarmResNet()
