@@ -54,7 +54,7 @@ def prepare_model_(model, *data, device='cpu'):
                 return torch.randn(*d, device=device)
             return [_prep_data(x) for x in d]
         elif isinstance(d, dict):
-            return {_prep_data(v) for k, v in d.items()}
+            return {k:_prep_data(v) for k, v in d.items()}
     with torch.no_grad():
         is_training = model.training
         data = [_prep_data(d) for d in data]
