@@ -71,7 +71,7 @@ def drop_connect(x, rate):
     """ Randomly set entire batch to 0. """
     if rate == 0:
         return x
-    rate = 1.00-rate
+    rate = 1.0-rate
     drop_mask = torch.rand([x.shape[0], 1, 1, 1], device=x.device, requires_grad=False)+rate
     return x/rate*drop_mask.floor()
 
