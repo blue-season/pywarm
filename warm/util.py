@@ -7,8 +7,10 @@ import torch.nn as nn
 import numpy as np
 import re
 
+
 """ Create a property for class torch.Tensor called ndim. """
 torch.Tensor.ndim = property(lambda x: x.dim())
+
 
 def camel_to_snake(name):
     """ Convert a camelCaseString to its snake_case_equivalent. """
