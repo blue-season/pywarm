@@ -125,3 +125,18 @@ def test_forward():
     y = engine.forward(
         x, base_class=nn.Linear, base_kw={'out_features':4}, infer_kw={'in_features':'C'}, base_shape='BDC')
     assert  y.shape[1] == 4, 'base_kw, infer_kw did not work correctly.'
+
+
+def test_namespace():
+    m = nn.Module()
+    engine.set_default_parent(m)
+    @engine.namespace
+    def f1(name=''):
+        return ';'.join([f2(name=name) for i in range(2)])
+    @engine.namespace
+    def f2(name=''):
+        return name
+    s0, s1, s2 = [f1() for i in range(3)]
+    assert s0 == 'f1_1-f2_1;f1_1-f2_2'
+    assert s1 == 'f1_2-f2_1;f1_2-f2_2'
+    assert s2 == 'f1_3-f2_1;f1_3-f2_2'

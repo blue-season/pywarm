@@ -54,7 +54,7 @@ def prepare_model_(model, *data, device='cpu'):
                 return torch.randn(*d, device=device)
             return [_prep_data(x) for x in d]
         elif isinstance(d, dict):
-            return {_prep_data(v) for k, v in d.items()}
+            return {k:_prep_data(v) for k, v in d.items()}
     with torch.no_grad():
         is_training = model.training
         data = [_prep_data(d) for d in data]
@@ -195,3 +195,17 @@ def forward(x, base_class,
     if tuple_out:
         return (y, *r)
     return y
+
+
+import functools
+def namespace(f):
+    """ After decoration, the function name and call count will be appended to the `name` kw. """
+    @functools.wraps(f)
+    def _wrapped(*arg, **kw):
+        parent = kw.get('parent', get_default_parent())
+        name = kw.get('name', '')
+        name = '_warmns_' + name + ('-' if name else '') + f.__name__
+        name = _auto_name(name, parent)
+        kw['name'] = name.replace('_warmns_', '')
+        return f(*arg, **kw)
+    return _wrapped

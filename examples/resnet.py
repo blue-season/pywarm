@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 sys.path.append('..')
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -54,6 +55,15 @@ class WarmResNet(nn.Module):
         return y
 
 
+def test_time(fn, *arg, repeat=10, **kw):
+    dur = 0.0
+    for i in range(repeat):
+        start = time.time()
+        y = fn(*arg, **kw)
+        dur += time.time()-start
+    return dur
+
+
 def test():
     """ Compare the classification result of WarmResNet versus torchvision resnet18. """
     new = WarmResNet()
@@ -67,7 +77,7 @@ def test():
     new.load_state_dict(state)
     warm.util.summary(old)
     warm.util.summary(new)
-    x = torch.randn(1, 3, 32, 32)
+    x = torch.randn(2, 3, 224, 224)
     with torch.no_grad():
         old.eval()
         y_old = old(x)
@@ -77,6 +87,10 @@ def test():
             print('Success! Same results from old and new.')
         else:
             print('Warning! New and old produce different results.')
+        t_old = test_time(old, x)
+        t_new = test_time(new, x)
+        print('Total forward time for old:', t_old, 'seconds.')
+        print('Total forward time for new:', t_new, 'seconds.')
 
 
 if __name__ == '__main__':
