@@ -8,8 +8,9 @@ import numpy as np
 import re
 
 
-""" Create a property for class torch.Tensor called ndim. """
-torch.Tensor.ndim = property(lambda x: x.dim())
+""" Create a property for class torch.Tensor called ndim, for pytorch earlier than 1.2. """
+if not hasattr(torch.Tensor, 'ndim'):
+    torch.Tensor.ndim = property(lambda x: x.dim())
 
 
 def camel_to_snake(name):
